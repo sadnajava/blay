@@ -1,19 +1,19 @@
 package workshop.rest.datamodel;
 
 public class SessionIdInput {
-	String sid;
+	String sessionId;
 
 	public SessionIdInput(String sid) {
 		super();
-		this.sid = sid;
+		this.sessionId = sid;
 	}
 
 	public String getSessionId() {
-		return sid;
+		return sessionId;
 	}
 
 	public void setSessionId(String sid) {
-		this.sid = sid;
+		this.sessionId = sid;
 	}
 
 	public SessionIdInput() {

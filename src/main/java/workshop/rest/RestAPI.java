@@ -12,7 +12,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.json.simple.JSONObject;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -89,10 +88,13 @@ public class RestAPI {
 		if (sid == null) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
-		JSONObject retJson = new JSONObject();
-		retJson.put("sessionId", sid.getSessionId());
-		return Response.ok(retJson.toJSONString(), MediaType.APPLICATION_JSON)
-				.build();
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			return Response.ok(mapper.writeValueAsString(sid), MediaType.APPLICATION_JSON)
+					.build();
+		} catch (JsonProcessingException e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 	@GET
