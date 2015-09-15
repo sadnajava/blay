@@ -12,7 +12,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,8 +21,10 @@ import workshop.SessionId;
 import workshop.StringUtils;
 import workshop.cassandra.CassandraFactory;
 import workshop.cassandra.ICassandraClient;
+import workshop.dal.SqueakerData;
 import workshop.dal.datamodel.SqueakData;
 import workshop.dal.datamodel.SqueakInfo;
+import workshop.rest.datamodel.FindInfoInput;
 import workshop.rest.datamodel.GetSqueakInput;
 import workshop.rest.datamodel.IOConverter;
 import workshop.rest.datamodel.LoginInput;
@@ -90,8 +91,8 @@ public class RestAPI {
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			return Response.ok(mapper.writeValueAsString(sid), MediaType.APPLICATION_JSON)
-					.build();
+			return Response.ok(mapper.writeValueAsString(sid),
+					MediaType.APPLICATION_JSON).build();
 		} catch (JsonProcessingException e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
@@ -198,13 +199,31 @@ public class RestAPI {
 	@GET
 	@Path("/finduser")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void findUser() {
+	public Response findUser(@Type(FindInfoInput.class) FindInfoInput search) {
+		return null;
 	}
 
 	@GET
 	@Path("/getsqueaker")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getSqueaker() {
-
+	public Response getSqueaker(@Type(FindInfoInput.class) FindInfoInput search) {
+		if (search == null || StringUtils.isEmpty(search.getSessionId())
+				|| StringUtils.isEmpty(search.getSearchValue())) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+		SqueakerData squeaker = bi.getSqueaker(
+				new SessionId(search.getSessionId()), search.getSearchValue());
+		if (squeaker == null) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		} else {
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				return Response.ok(
+						mapper.writeValueAsString(squeaker),
+						MediaType.APPLICATION_JSON).build();
+			} catch (JsonProcessingException e) {
+				return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+			}
+		}
 	}
 }

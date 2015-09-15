@@ -155,4 +155,8 @@ public class Subscriber implements IPrimaryKey {
 	public void addSquak(UUID squeakId){
 		Squeaks.add(squeakId);
 	}
+	
+	public boolean isFollowing(String email){
+		return following.contains(email);
+	}
 }

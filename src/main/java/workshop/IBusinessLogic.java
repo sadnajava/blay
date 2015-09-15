@@ -3,6 +3,7 @@ package workshop;
 import java.util.Set;
 import java.util.UUID;
 
+import workshop.dal.SqueakerData;
 import workshop.dal.datamodel.SqueakData;
 import workshop.dal.datamodel.SqueakInfo;
 
@@ -13,4 +14,6 @@ public interface IBusinessLogic {
 	boolean unfollow(SessionId sid, String email);
 	boolean recordSqueak(SessionId sid, SqueakInfo info, SqueakData data);
 	SqueakData getSqueak(SessionId sid, String squeakId);
+	SqueakerData getSqueaker(SessionId sid, String email);
+	
 }
