@@ -22,9 +22,9 @@ import workshop.dal.datamodel.Subscriber;
 
 public class BusinessLogic implements IBusinessLogic {
 	Map<SessionId, Subscriber> sessions;
-	ISubscriberDao subscriberDao = new SubscribersDao();
-	ISqueakInfoDao squeakInfoDao = new SqueakInfoDao();
-	ISqueakDataDao squeakDataDao = new SqueakDataDao();
+	ISubscriberDao subscriberDao;
+	ISqueakInfoDao squeakInfoDao;
+	ISqueakDataDao squeakDataDao;
 
 	private static BusinessLogic instance = null;
 	

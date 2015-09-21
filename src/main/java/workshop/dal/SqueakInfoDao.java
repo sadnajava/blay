@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import workshop.cassandra.CassandraFactory;
@@ -24,6 +25,7 @@ public class SqueakInfoDao implements ISqueakInfoDao {
 	public SqueakInfo getSqueak(UUID squeakId) {
 		String jsonedSqueakInfo = client.read(squeakId.toString());
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		try {
 			return mapper.readValue(jsonedSqueakInfo, SqueakInfo.class);
 		} catch (IOException e) {
@@ -36,6 +38,7 @@ public class SqueakInfoDao implements ISqueakInfoDao {
 	@Override
 	public void putSqueak(SqueakInfo squeak) {
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		try {
 			client.write(squeak.getPK(), mapper.writeValueAsString(squeak));
 		} catch (JsonProcessingException e) {

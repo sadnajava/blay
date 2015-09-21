@@ -13,6 +13,7 @@ public class SqueakInfo extends AbstractSqueak {
 		this.date = date;
 	}
 
+	
 	public String getEmail() {
 		return email;
 	}

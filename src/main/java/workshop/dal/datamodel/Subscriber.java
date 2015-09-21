@@ -159,4 +159,13 @@ public class Subscriber implements IPrimaryKey {
 	public boolean isFollowing(String email){
 		return following.contains(email);
 	}
+
+	public Date getRegistrationDate() {
+		return registrationDate;
+	}
+
+	public void setRegistrationDate(Date registrationDate) {
+		this.registrationDate = registrationDate;
+	}
+	
 }
