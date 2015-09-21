@@ -8,9 +8,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import workshop.cassandra.CassandraFactory;
 import workshop.dal.ISqueakDataDao;
 import workshop.dal.ISqueakInfoDao;
 import workshop.dal.ISubscriberDao;
+import workshop.dal.SqueakDataDao;
+import workshop.dal.SqueakInfoDao;
 import workshop.dal.SqueakerData;
 import workshop.dal.SubscribersDao;
 import workshop.dal.datamodel.SqueakData;
@@ -28,6 +31,9 @@ public class BusinessLogic implements IBusinessLogic {
 	
 	private BusinessLogic() {
 		sessions = new ConcurrentHashMap<>();
+		subscriberDao = new SubscribersDao();
+		squeakInfoDao = new SqueakInfoDao();
+		squeakDataDao = new SqueakDataDao();
 	}
 
 	// Lazy Initialization (If required then only)
