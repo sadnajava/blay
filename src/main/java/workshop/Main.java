@@ -31,7 +31,7 @@ public class Main {
     public static HttpServer startServer() {
         // create a resource config that scans for JAX-RS resources and providers
         // in java.workshop package
-        final ResourceConfig rc = new ResourceConfig().packages("workshop");
+        final ResourceConfig rc = new ResourceConfig().packages("workshop.rest");
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI
@@ -45,30 +45,12 @@ public class Main {
      */
     public static void main(String[] args) throws IOException {
     	System.out.println("Started");
-//        final HttpServer server = startServer();
-//        System.out.println(String.format("Jersey app started with WADL available at "
-//                + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
-//        
-//        System.in.read();
-//        server.stop();
-    	
-    	
-//    	Subscriber subscriber = new Subscriber("tomer", Calendar.getInstance().getTime().toString());
-    	SqueakInfo[] squeaks = new SqueakInfo[10];
-    	HashSet<SqueakInfo> set = new HashSet<>();
-    	for (int i=0; i<10; i++){
-    		set.add(new SqueakInfo("myEmail", i, "currentDate"));
-    	}
-    	 ObjectMapper mapper = new ObjectMapper();
-    	 
-    	String json = mapper.writeValueAsString(set);
-		System.out.println(json);
-		
-//		Subscriber subFromJson = mapper.readValue(json, Subscriber.class);
-//		System.out.println(subFromJson);
-//    	 
-//    	System.in.read();
-//    	System.out.println("Finished");
+        final HttpServer server = startServer();
+        System.out.println(String.format("Jersey app started with WADL available at "
+                + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
+        
+        System.in.read();
+        server.stop();
     }
 }
 
