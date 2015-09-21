@@ -16,7 +16,9 @@ import workshop.cassandra.ICassandraClient;
 @Path("db/")
 public class MyResource {
 
-    /**
+    private static final String columnFamilyName = "test123";
+
+	/**
      * Method handling HTTP GET requests. The returned object will be sent
      * to the client as "text/plain" media type.
      *
@@ -27,7 +29,7 @@ public class MyResource {
     @Produces(MediaType.TEXT_PLAIN)
     public String write(@PathParam("key") String key, @PathParam("value") String value) {
         System.out.println("Inside getIt!");
-        ICassandraClient db = CassandraFactory.connect("bla");
+        ICassandraClient db = CassandraFactory.connect(columnFamilyName);
         db.write(key, value);
         return "Got it!";
     }
@@ -36,7 +38,7 @@ public class MyResource {
     @Path("/read/{key}")
     @Produces(MediaType.TEXT_PLAIN)
     public String read(@PathParam("key") String key) {
-        ICassandraClient db = CassandraFactory.connect("bla");
+        ICassandraClient db = CassandraFactory.connect(columnFamilyName);
         return db.read(key);
     }
     
@@ -44,7 +46,7 @@ public class MyResource {
     @Path("/readall")
     @Produces(MediaType.TEXT_PLAIN)
     public String readAll() {
-        ICassandraClient db = CassandraFactory.connect("bla");
+        ICassandraClient db = CassandraFactory.connect(columnFamilyName);
         return db.readAll();
     }
 }

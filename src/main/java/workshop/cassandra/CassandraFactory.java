@@ -16,7 +16,7 @@ public class CassandraFactory {
     public static ICassandraClient connect(String columnFamily){
     	AstyanaxContext<Keyspace> context = new AstyanaxContext.Builder()
         .forCluster("Test Cluster")
-        .forKeyspace("Test")
+        .forKeyspace("Sadna")
         .withAstyanaxConfiguration(new AstyanaxConfigurationImpl()      
             .setDiscoveryType(NodeDiscoveryType.RING_DESCRIBE)
             .setTargetCassandraVersion("2.0")
@@ -31,6 +31,5 @@ public class CassandraFactory {
 
         context.start();
         return new CassandraClient(context.getClient(), columnFamily);
-//        return null;
     }
 }
