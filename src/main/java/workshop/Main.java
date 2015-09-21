@@ -2,19 +2,10 @@ package workshop;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Calendar;
-import java.util.HashSet;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-
-import workshop.dal.datamodel.SqueakData;
-import workshop.dal.datamodel.SqueakInfo;
-import workshop.dal.datamodel.Subscriber;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Main class.
@@ -51,6 +42,7 @@ public class Main {
         
         System.in.read();
         server.stop();
+        
     }
 }
 
