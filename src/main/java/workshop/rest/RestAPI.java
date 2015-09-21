@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import workshop.BusinessLogic;
 import workshop.IBusinessLogic;
 import workshop.SessionId;
 import workshop.StringUtils;
@@ -38,7 +39,7 @@ import workshop.rest.datamodel.followSqueakerInput;
 @Path("api/")
 public class RestAPI {
 
-	IBusinessLogic bi = null;
+	IBusinessLogic bi = BusinessLogic.getInstance();
 	String cfName = "TomerCF";
 
 	/**

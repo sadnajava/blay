@@ -24,8 +24,23 @@ public class BusinessLogic implements IBusinessLogic {
 	ISqueakDataDao squeakDataDao;
 	private Set<UUID> squeaksIds;
 
-	public BusinessLogic() {
+	private static BusinessLogic instance = null;
+	
+	private BusinessLogic() {
 		sessions = new ConcurrentHashMap<>();
+	}
+
+	// Lazy Initialization (If required then only)
+	public static BusinessLogic getInstance() {
+		if (instance == null) {
+			// Thread Safe
+			synchronized (BusinessLogic.class) {
+				if (instance == null) {
+					instance = new BusinessLogic();
+				}
+			}
+		}
+		return instance;
 	}
 
 	public SessionId login(String email, String password) {

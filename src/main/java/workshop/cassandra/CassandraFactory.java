@@ -8,10 +8,6 @@ import com.netflix.astyanax.connectionpool.impl.CountingConnectionPoolMonitor;
 import com.netflix.astyanax.impl.AstyanaxConfigurationImpl;
 import com.netflix.astyanax.thrift.ThriftFamilyFactory;
 
-
-
-
-
 public class CassandraFactory {
     public static ICassandraClient connect(String columnFamily){
     	AstyanaxContext<Keyspace> context = new AstyanaxContext.Builder()
