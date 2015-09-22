@@ -99,7 +99,7 @@ public class RestAPI {
 		}
 	}
 
-	@GET
+	@POST
 	@Path("/updatefeed")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updateFeed(
@@ -174,7 +174,7 @@ public class RestAPI {
 		}
 	}
 
-	@GET
+	@POST
 	@Path("/getsqueak")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getSqueak(@Type(GetSqueakInput.class) GetSqueakInput request) {
@@ -197,14 +197,14 @@ public class RestAPI {
 		}
 	}
 
-	@GET
+	@POST
 	@Path("/finduser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response findUser(@Type(FindInfoInput.class) FindInfoInput search) {
 		return null;
 	}
 
-	@GET
+	@POST
 	@Path("/getsqueaker")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getSqueaker(@Type(FindInfoInput.class) FindInfoInput search) {
