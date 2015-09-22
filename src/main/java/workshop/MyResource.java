@@ -47,6 +47,6 @@ public class MyResource {
     @Produces(MediaType.TEXT_PLAIN)
     public String readAll() {
         ICassandraClient db = CassandraFactory.connect(columnFamilyName);
-        return db.readAll();
+        return db.readAllFormatted();
     }
 }

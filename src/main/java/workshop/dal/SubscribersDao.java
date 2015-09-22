@@ -1,6 +1,8 @@
 package workshop.dal;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
 
 import workshop.cassandra.CassandraFactory;
 import workshop.cassandra.ICassandraClient;
@@ -39,6 +41,23 @@ public class SubscribersDao implements ISubscriberDao {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
+	}
+	@Override
+	public Collection<Subscriber> getAllSubscriber() {
+		Collection<Subscriber> allSubscribers = new HashSet<>();
+		
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		
+		Collection<String> alljsonedUsers = client.readAll();
+		for (String jsonedUser : alljsonedUsers){
+			try {
+				allSubscribers.add(mapper.readValue(jsonedUser, Subscriber.class));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return allSubscribers;
 	}
 
 }

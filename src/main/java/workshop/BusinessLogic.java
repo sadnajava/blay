@@ -1,6 +1,7 @@
 package workshop;
 
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -196,5 +197,21 @@ public class BusinessLogic implements IBusinessLogic {
 		theUser.setUserName(newName);
 		subscriberDao.putSubscriber(theUser);
 		return true;
+	}
+
+	@Override
+	public Collection<String> findUsers(SessionId sessionId, String searchValue) {
+		Collection<String> users = new HashSet<>();
+		Subscriber theUser = sessions.get(sessionId);
+		if (theUser == null) {
+			return users;
+		}
+		Collection<Subscriber> allSubscriber = subscriberDao.getAllSubscriber();
+		for (Subscriber sub : allSubscriber){
+			if (sub.getUserName().equals(searchValue)){
+				users.add(sub.getEmail());
+			}
+		}
+		return users;
 	}
 }

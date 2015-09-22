@@ -1,5 +1,6 @@
 package workshop.rest;
 
+import java.util.Collection;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
@@ -73,7 +74,7 @@ public class RestAPI {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String readAll() {
 		ICassandraClient db = CassandraFactory.connect(cfName);
-		return db.readAll();
+		return db.readAllFormatted();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -223,18 +224,33 @@ public class RestAPI {
 	@Path("/finduser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response findUser(@Type(FindInfoInput.class) FindInfoInput search) {
-		return null;
+		if (search == null || StringUtils.isEmpty(search.getSessionId())
+				|| StringUtils.isEmpty(search.getSearchValue())) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+		Collection<String> users = bi.findUsers(
+				new SessionId(search.getSessionId()), search.getSearchValue());
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			return Response.ok(mapper.writeValueAsString(users),
+					MediaType.APPLICATION_JSON).build();
+		} catch (JsonProcessingException e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
 	}
-	
+
 	@POST
 	@Path("/updatename")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response findUser(@Type(ChangeDisplayNameInput.class) ChangeDisplayNameInput newName) {
+	public Response findUser(
+			@Type(ChangeDisplayNameInput.class) ChangeDisplayNameInput newName) {
 		if (newName == null || StringUtils.isEmpty(newName.getSessionId())
 				|| StringUtils.isEmpty(newName.getNewDisplayName())) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
-		boolean result = bi.updateUserName(new SessionId(newName.getSessionId()), newName.getNewDisplayName());
+		boolean result = bi.updateUserName(
+				new SessionId(newName.getSessionId()),
+				newName.getNewDisplayName());
 		if (result) {
 			return Response.status(Status.OK).build();
 		} else {

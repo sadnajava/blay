@@ -1,7 +1,11 @@
 package workshop.cassandra;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
+
+import org.apache.cassandra.thrift.Cassandra.system_add_column_family_args;
 
 import com.google.common.collect.ImmutableMap;
 import com.netflix.astyanax.Keyspace;
@@ -73,7 +77,7 @@ public class CassandraClient implements ICassandraClient {
 		}
 		return "No connection to DB";
 	}
-	
+
 	@Override
 	public void remove(String key) {
 		if (keyspace != null) {
@@ -88,7 +92,7 @@ public class CassandraClient implements ICassandraClient {
 	}
 
 	@Override
-	public String readAll() {
+	public String readAllFormatted() {
 		if (keyspace != null) {
 			try {
 				Rows<String, String> result = keyspace.prepareQuery(cfInfo)
@@ -114,5 +118,26 @@ public class CassandraClient implements ICassandraClient {
 
 		}
 		return "No connection to DB";
+	}
+
+	@Override
+	public Collection<String> readAll() {
+		Collection<String> retResults = new HashSet<>();
+		if (keyspace != null) {
+			try {
+				Rows<String, String> result = keyspace.prepareQuery(cfInfo)
+						.getAllRows().execute().getResult();
+				Iterator<Row<String, String>> iterator = result.iterator();
+				while (iterator.hasNext()) {
+					Row<String, String> row = iterator.next();
+					retResults.add(row.getColumns().getColumnByName("JSON")
+							.getStringValue());
+				}
+
+			} catch (Exception e) {
+				return retResults;
+			}
+		}
+		return retResults;
 	}
 }
