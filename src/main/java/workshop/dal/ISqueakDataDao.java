@@ -8,4 +8,6 @@ public interface ISqueakDataDao {
 	SqueakData getSqueak(UUID squeakId);
 
 	void putSqueak(SqueakData squeak);
+	
+	void removeSqueak(UUID squeakId);
 }

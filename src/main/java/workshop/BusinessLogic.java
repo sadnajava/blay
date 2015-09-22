@@ -25,7 +25,7 @@ public class BusinessLogic implements IBusinessLogic {
 	ISqueakDataDao squeakDataDao;
 
 	private static BusinessLogic instance = null;
-	
+
 	private BusinessLogic() {
 		sessions = new ConcurrentHashMap<>();
 		subscriberDao = new SubscribersDao();
@@ -53,7 +53,8 @@ public class BusinessLogic implements IBusinessLogic {
 
 		if (subscriber == null) {
 			// create
-			Subscriber newSub = new Subscriber(email, email, password, Calendar.getInstance().getTime());
+			Subscriber newSub = new Subscriber(email, email, password, Calendar
+					.getInstance().getTime());
 
 			subscriberDao.putSubscriber(newSub);
 			sid = addToSessionCache(newSub);
@@ -137,9 +138,9 @@ public class BusinessLogic implements IBusinessLogic {
 		if (theUser == null) {
 			return null;
 		}
-		
+
 		UUID properSqueakId = UUID.fromString(squeakId);
-		if (theUser.getSqueaks().contains(properSqueakId)){
+		if (theUser.getSqueaks().contains(properSqueakId)) {
 			return squeakDataDao.getSqueak(properSqueakId);
 		}
 		return null;
@@ -152,19 +153,37 @@ public class BusinessLogic implements IBusinessLogic {
 			return null;
 		}
 		Subscriber subscriber = subscriberDao.getSubscriber(email);
-		
-		if (subscriber == null){
+
+		if (subscriber == null) {
 			return null;
 		}
-		
+
 		Set<SqueakInfo> retSqueaks = new HashSet<>();
 		Set<UUID> squeaksIds = subscriber.getSqueaks();
-		for (UUID squeakId : squeaksIds){
+		for (UUID squeakId : squeaksIds) {
 			SqueakInfo squeakInfo = squeakInfoDao.getSqueak(squeakId);
-			if (squeakInfo != null){
+			if (squeakInfo != null) {
 				retSqueaks.add(squeakInfo);
 			}
 		}
-		return new SqueakerData(theUser.getEmail(),email,retSqueaks, theUser.isFollowing(email));
+		return new SqueakerData(theUser.getEmail(), email, retSqueaks,
+				theUser.isFollowing(email));
+	}
+
+	@Override
+	public boolean deleteSqueak(SessionId sessionId, String squeakId) {
+		Subscriber theUser = sessions.get(sessionId);
+		if (theUser == null) {
+			return false;
+		}
+
+		UUID properSqueakId = UUID.fromString(squeakId);
+		if (theUser.removeSqueak(properSqueakId)) {
+			squeakInfoDao.removeSqueak(properSqueakId);
+			squeakDataDao.removeSqueak(properSqueakId);
+			subscriberDao.putSubscriber(theUser);
+			return true;
+		}
+		return false;
 	}
 }

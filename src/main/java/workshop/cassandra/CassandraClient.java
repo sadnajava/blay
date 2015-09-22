@@ -73,6 +73,19 @@ public class CassandraClient implements ICassandraClient {
 		}
 		return "No connection to DB";
 	}
+	
+	@Override
+	public void remove(String key) {
+		if (keyspace != null) {
+			MutationBatch mb = keyspace.prepareMutationBatch();
+			mb.withRow(cfInfo, key).delete();
+
+			try {
+				mb.execute();
+			} catch (ConnectionException e) {
+			}
+		}
+	}
 
 	@Override
 	public String readAll() {

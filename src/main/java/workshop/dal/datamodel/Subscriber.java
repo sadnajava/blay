@@ -168,4 +168,7 @@ public class Subscriber implements IPrimaryKey {
 		this.registrationDate = registrationDate;
 	}
 	
+	public boolean removeSqueak(UUID squeakId){
+		return Squeaks.remove(squeakId);
+	}
 }

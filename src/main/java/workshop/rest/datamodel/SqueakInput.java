@@ -1,9 +1,9 @@
 package workshop.rest.datamodel;
 
-public class GetSqueakInput extends SessionIdInput {
+public class SqueakInput extends SessionIdInput {
 	String sqeuakId;
 
-	public GetSqueakInput(String sid, String sqeuakId) {
+	public SqueakInput(String sid, String sqeuakId) {
 		super(sid);
 		this.sqeuakId = sqeuakId;
 	}

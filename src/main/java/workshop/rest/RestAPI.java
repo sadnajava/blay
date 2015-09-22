@@ -3,6 +3,7 @@ package workshop.rest;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -11,10 +12,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import workshop.BusinessLogic;
 import workshop.IBusinessLogic;
@@ -26,12 +23,16 @@ import workshop.dal.SqueakerData;
 import workshop.dal.datamodel.SqueakData;
 import workshop.dal.datamodel.SqueakInfo;
 import workshop.rest.datamodel.FindInfoInput;
-import workshop.rest.datamodel.GetSqueakInput;
 import workshop.rest.datamodel.IOConverter;
 import workshop.rest.datamodel.LoginInput;
 import workshop.rest.datamodel.RecordSqueakInput;
 import workshop.rest.datamodel.SessionIdInput;
+import workshop.rest.datamodel.SqueakInput;
 import workshop.rest.datamodel.followSqueakerInput;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Root resource (exposed at "myresource" path)
@@ -102,6 +103,7 @@ public class RestAPI {
 	@POST
 	@Path("/updatefeed")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateFeed(
 			@Type(SessionIdInput.class) SessionIdInput sessionId) {
 		if (sessionId == null || StringUtils.isEmpty(sessionId.getSessionId())) {
@@ -177,7 +179,8 @@ public class RestAPI {
 	@POST
 	@Path("/getsqueak")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getSqueak(@Type(GetSqueakInput.class) GetSqueakInput request) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getSqueak(@Type(SqueakInput.class) SqueakInput request) {
 		if (request == null || StringUtils.isEmpty(request.getSessionId())
 				|| StringUtils.isEmpty(request.getSqeuakId())) {
 			return Response.status(Status.BAD_REQUEST).build();
@@ -197,6 +200,24 @@ public class RestAPI {
 		}
 	}
 
+	@DELETE
+	@Path("/deletesqueak")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteSqueak(@Type(SqueakInput.class) SqueakInput request) {
+		if (request == null || StringUtils.isEmpty(request.getSessionId())
+				|| StringUtils.isEmpty(request.getSqeuakId())) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+		boolean result = bi.deleteSqueak(new SessionId(request.getSessionId()),
+				request.getSqeuakId());
+		if (result) {
+			return Response.status(Status.OK).build();
+		} else {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
 	@POST
 	@Path("/finduser")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -207,6 +228,7 @@ public class RestAPI {
 	@POST
 	@Path("/getsqueaker")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getSqueaker(@Type(FindInfoInput.class) FindInfoInput search) {
 		if (search == null || StringUtils.isEmpty(search.getSessionId())
 				|| StringUtils.isEmpty(search.getSearchValue())) {
@@ -219,8 +241,7 @@ public class RestAPI {
 		} else {
 			ObjectMapper mapper = new ObjectMapper();
 			try {
-				return Response.ok(
-						mapper.writeValueAsString(squeaker),
+				return Response.ok(mapper.writeValueAsString(squeaker),
 						MediaType.APPLICATION_JSON).build();
 			} catch (JsonProcessingException e) {
 				return Response.status(Status.INTERNAL_SERVER_ERROR).build();

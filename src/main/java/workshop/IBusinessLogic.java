@@ -15,5 +15,6 @@ public interface IBusinessLogic {
 	boolean recordSqueak(SessionId sid, SqueakInfo info, SqueakData data);
 	SqueakData getSqueak(SessionId sid, String squeakId);
 	SqueakerData getSqueaker(SessionId sid, String email);
+	boolean deleteSqueak(SessionId sessionId, String sqeuakId);
 	
 }

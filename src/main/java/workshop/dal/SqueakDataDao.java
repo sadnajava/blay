@@ -45,4 +45,9 @@ public class SqueakDataDao implements ISqueakDataDao {
 		}
 	}
 
+	@Override
+	public void removeSqueak(UUID squeakId) {
+		client.remove(squeakId.toString());
+	}
+
 }
