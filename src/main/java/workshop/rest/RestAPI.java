@@ -232,7 +232,7 @@ public class RestAPI {
 				new SessionId(search.getSessionId()), search.getSearchValue());
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			return Response.ok(mapper.writeValueAsString(users),
+			return Response.ok(mapper.writeValueAsString(users	),
 					MediaType.APPLICATION_JSON).build();
 		} catch (JsonProcessingException e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();

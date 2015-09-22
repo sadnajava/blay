@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.StringUtils;
+
 import workshop.dal.ISqueakDataDao;
 import workshop.dal.ISqueakInfoDao;
 import workshop.dal.ISubscriberDao;
@@ -208,7 +210,7 @@ public class BusinessLogic implements IBusinessLogic {
 		}
 		Collection<Subscriber> allSubscriber = subscriberDao.getAllSubscriber();
 		for (Subscriber sub : allSubscriber){
-			if (sub.getUserName().equals(searchValue)){
+			if (StringUtils.containsIgnoreCase(sub.getUserName(), searchValue)){
 				users.add(sub.getEmail());
 			}
 		}
