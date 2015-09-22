@@ -135,7 +135,7 @@ public class RestAPI {
 		}
 		SessionId sessionId = new SessionId(squeak.getSessionId());
 		SqueakInfo info = new SqueakInfo(squeak.getEmail(),
-				squeak.getDuration(), squeak.getDate());
+				squeak.getDuration(), squeak.getDate(), squeak.getCaption());
 		SqueakData data = new SqueakData(squeak.getData());
 		bi.recordSqueak(sessionId, info, data);
 		return Response.status(Status.OK).build();

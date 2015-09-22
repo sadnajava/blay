@@ -4,16 +4,25 @@ public class RecordSqueakInput extends SessionIdInput {
 	String email;
 	int duration;
 	String date;
+	String caption;
 	String data;
 
-	
 	public RecordSqueakInput(String sid, String email, int duration,
-			String date, String data) {
+			String date, String caption, String data) {
 		super(sid);
 		this.email = email;
 		this.duration = duration;
 		this.date = date;
+		this.caption = caption;
 		this.data = data;
+	}
+
+	public String getCaption() {
+		return caption;
+	}
+
+	public void setCaption(String caption) {
+		this.caption = caption;
 	}
 
 	public String getEmail() {

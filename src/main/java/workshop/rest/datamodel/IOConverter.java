@@ -15,7 +15,7 @@ public class IOConverter {
 	public static Set<SqueakInfoOutput> convert(Set<SqueakInfo> squeaks) {
 		Set<SqueakInfoOutput> retSet = new HashSet<>();
 		for (SqueakInfo squeak : squeaks){
-			retSet.add(new SqueakInfoOutput(squeak.getPK(), squeak.getEmail(), squeak.getDuration(), squeak.getDate()));
+			retSet.add(new SqueakInfoOutput(squeak.getPK(), squeak.getEmail(), squeak.getDuration(), squeak.getDate(), squeak.getCaption()));
 		}
 		return retSet;
 	}

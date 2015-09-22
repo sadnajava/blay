@@ -5,15 +5,24 @@ public class SqueakInfo extends AbstractSqueak {
 	String email;
 	int duration;
 	String date;
+	String caption;
 	
-	public SqueakInfo(String email, int duration, String date) {
+	public SqueakInfo(String email, int duration, String date, String caption) {
 		super();
 		this.email = email;
 		this.duration = duration;
 		this.date = date;
+		this.caption = caption;
 	}
 
-	
+	public String getCaption() {
+		return caption;
+	}
+
+	public void setCaption(String caption) {
+		this.caption = caption;
+	}
+
 	public String getEmail() {
 		return email;
 	}
