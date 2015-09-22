@@ -186,4 +186,15 @@ public class BusinessLogic implements IBusinessLogic {
 		}
 		return false;
 	}
+
+	@Override
+	public boolean updateUserName(SessionId sessionId, String newName) {
+		Subscriber theUser = sessions.get(sessionId);
+		if (theUser == null) {
+			return false;
+		}
+		theUser.setUserName(newName);
+		subscriberDao.putSubscriber(theUser);
+		return true;
+	}
 }

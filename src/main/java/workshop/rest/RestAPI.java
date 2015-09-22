@@ -22,6 +22,7 @@ import workshop.cassandra.ICassandraClient;
 import workshop.dal.SqueakerData;
 import workshop.dal.datamodel.SqueakData;
 import workshop.dal.datamodel.SqueakInfo;
+import workshop.rest.datamodel.ChangeDisplayNameInput;
 import workshop.rest.datamodel.FindInfoInput;
 import workshop.rest.datamodel.IOConverter;
 import workshop.rest.datamodel.LoginInput;
@@ -223,6 +224,22 @@ public class RestAPI {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response findUser(@Type(FindInfoInput.class) FindInfoInput search) {
 		return null;
+	}
+	
+	@POST
+	@Path("/updatename")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response findUser(@Type(ChangeDisplayNameInput.class) ChangeDisplayNameInput newName) {
+		if (newName == null || StringUtils.isEmpty(newName.getSessionId())
+				|| StringUtils.isEmpty(newName.getNewDisplayName())) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+		boolean result = bi.updateUserName(new SessionId(newName.getSessionId()), newName.getNewDisplayName());
+		if (result) {
+			return Response.status(Status.OK).build();
+		} else {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 	@POST
