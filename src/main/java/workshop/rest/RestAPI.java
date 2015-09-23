@@ -53,7 +53,6 @@ public class RestAPI {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String write(@PathParam("key") String key,
 			@PathParam("value") String value) {
-		System.out.println("Inside getIt!");
 		ICassandraClient db = CassandraFactory.connect(cfName);
 		db.write(key, value);
 		return "Got it!";
@@ -87,6 +86,7 @@ public class RestAPI {
 		}
 
 		SessionId sid = bi.login(loginInfo.getEmail(), loginInfo.getPassword());
+
 		if (sid == null) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}

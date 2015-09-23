@@ -22,10 +22,9 @@ import workshop.dal.datamodel.Subscriber;
 
 public class BusinessLogic implements IBusinessLogic {
 	Map<SessionId, Subscriber> sessions;
-	ISubscriberDao subscriberDao;
-	ISqueakInfoDao squeakInfoDao;
-	ISqueakDataDao squeakDataDao;
-	private Set<UUID> squeaksIds;
+	ISubscriberDao subscriberDao = new SubscribersDao();
+	ISqueakInfoDao squeakInfoDao = new SqueakInfoDao();
+	ISqueakDataDao squeakDataDao = new SqueakDataDao();
 
 	private static BusinessLogic instance = null;
 	
@@ -50,24 +49,21 @@ public class BusinessLogic implements IBusinessLogic {
 	}
 
 	public SessionId login(String email, String password) {
+		SessionId sid = null;
+
 		Subscriber subscriber = subscriberDao.getSubscriber(email);
+
 		if (subscriber == null) {
 			// create
-			Date currentDate = Calendar.getInstance().getTime();
-
-			Subscriber newSub = new Subscriber(email, email, password,
-					currentDate);
+			Subscriber newSub = new Subscriber(email, email, password, Calendar.getInstance().getTime());
 
 			subscriberDao.putSubscriber(newSub);
-			SessionId sid = addToSessionCache(newSub);
-			return sid;
+			sid = addToSessionCache(newSub);
 		} else if (subscriber.getPassword().equals(password)) {
-
-			SessionId sid = addToSessionCache(subscriber);
-			return sid;
-		} else {
-			return null;
+			sid = addToSessionCache(subscriber);
 		}
+
+		return sid;
 	}
 
 	private SessionId addToSessionCache(Subscriber newSub) {
@@ -164,7 +160,7 @@ public class BusinessLogic implements IBusinessLogic {
 		}
 		
 		Set<SqueakInfo> retSqueaks = new HashSet<>();
-		squeaksIds = subscriber.getSqueaks();
+		Set<UUID> squeaksIds = subscriber.getSqueaks();
 		for (UUID squeakId : squeaksIds){
 			SqueakInfo squeakInfo = squeakInfoDao.getSqueak(squeakId);
 			if (squeakInfo != null){
