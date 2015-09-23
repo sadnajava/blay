@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Squeaker</string>
+    <string name="title_person_list">People</string>
+    <string name="title_person_detail">Person Detail</string>
+    <string name="title_activity_record_squeak">Record a squeak</string>
+    <string name="title_activity_user_profile">User profile</string>
+    <string name="title_activity_news_feed">Squeaker</string>
+    <string name="title_activity_user_search">Find user</string>
+    <string name="action_record_squeak">Record new squeak</string>
+    <string name="action_find_user">Find user</string>
+</resources>
