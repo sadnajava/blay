@@ -7,6 +7,7 @@ import java.util.UUID;
 import workshop.dal.SqueakerData;
 import workshop.dal.datamodel.SqueakData;
 import workshop.dal.datamodel.SqueakInfo;
+import workshop.rest.datamodel.FindUserOutput;
 
 public interface IBusinessLogic {
 	SessionId login(String email, String password);
@@ -18,6 +19,6 @@ public interface IBusinessLogic {
 	SqueakerData getSqueaker(SessionId sid, String email);
 	boolean deleteSqueak(SessionId sessionId, String sqeuakId);
 	boolean updateUserName(SessionId sessionId, String newName);
-	Collection<String> findUsers(SessionId sessionId, String searchValue);
+	Collection<FindUserOutput> findUsers(SessionId sessionId, String searchValue);
 	
 }

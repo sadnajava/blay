@@ -25,6 +25,7 @@ import workshop.dal.datamodel.SqueakData;
 import workshop.dal.datamodel.SqueakInfo;
 import workshop.rest.datamodel.ChangeDisplayNameInput;
 import workshop.rest.datamodel.FindInfoInput;
+import workshop.rest.datamodel.FindUserOutput;
 import workshop.rest.datamodel.IOConverter;
 import workshop.rest.datamodel.LoginInput;
 import workshop.rest.datamodel.RecordSqueakInput;
@@ -228,11 +229,11 @@ public class RestAPI {
 				|| StringUtils.isEmpty(search.getSearchValue())) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
-		Collection<String> users = bi.findUsers(
+		Collection<FindUserOutput> users = bi.findUsers(
 				new SessionId(search.getSessionId()), search.getSearchValue());
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			return Response.ok(mapper.writeValueAsString(users	),
+			return Response.ok(mapper.writeValueAsString(users),
 					MediaType.APPLICATION_JSON).build();
 		} catch (JsonProcessingException e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
@@ -242,7 +243,7 @@ public class RestAPI {
 	@POST
 	@Path("/updatename")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response findUser(
+	public Response updateName(
 			@Type(ChangeDisplayNameInput.class) ChangeDisplayNameInput newName) {
 		if (newName == null || StringUtils.isEmpty(newName.getSessionId())
 				|| StringUtils.isEmpty(newName.getNewDisplayName())) {

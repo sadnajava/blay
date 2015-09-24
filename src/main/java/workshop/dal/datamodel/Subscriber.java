@@ -171,4 +171,8 @@ public class Subscriber implements IPrimaryKey {
 	public boolean removeSqueak(UUID squeakId){
 		return Squeaks.remove(squeakId);
 	}
+	
+	public int getNumberOfSqueaks(){
+		return Squeaks.size();
+	}
 }

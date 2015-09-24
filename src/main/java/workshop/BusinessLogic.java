@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.persistence.internal.expressions.ForUpdateOfClause;
 
 import workshop.dal.ISqueakDataDao;
 import workshop.dal.ISqueakInfoDao;
@@ -20,6 +21,7 @@ import workshop.dal.SubscribersDao;
 import workshop.dal.datamodel.SqueakData;
 import workshop.dal.datamodel.SqueakInfo;
 import workshop.dal.datamodel.Subscriber;
+import workshop.rest.datamodel.FindUserOutput;
 
 public class BusinessLogic implements IBusinessLogic {
 	Map<SessionId, Subscriber> sessions;
@@ -202,8 +204,8 @@ public class BusinessLogic implements IBusinessLogic {
 	}
 
 	@Override
-	public Collection<String> findUsers(SessionId sessionId, String searchValue) {
-		Collection<String> users = new HashSet<>();
+	public Collection<FindUserOutput> findUsers(SessionId sessionId, String searchValue) {
+		Collection<FindUserOutput> users = new HashSet<>();
 		Subscriber theUser = sessions.get(sessionId);
 		if (theUser == null) {
 			return users;
@@ -211,7 +213,7 @@ public class BusinessLogic implements IBusinessLogic {
 		Collection<Subscriber> allSubscriber = subscriberDao.getAllSubscriber();
 		for (Subscriber sub : allSubscriber){
 			if (StringUtils.containsIgnoreCase(sub.getUserName(), searchValue)){
-				users.add(sub.getEmail());
+				users.add(new FindUserOutput(sub.getEmail(), sub.getNumberOfSqueaks()));
 			}
 		}
 		return users;
