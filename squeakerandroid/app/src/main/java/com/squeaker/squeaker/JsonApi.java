@@ -38,6 +38,8 @@ public class JsonApi {
 
     private static final String FIND_USER_URL = SERVER_HOST + "finduser";
     private static final String FIND_USER_SEARCH_VALUE_FIELD = "searchValue";
+    private static final String FIND_USER_SQUEAKS_COUNT_FIELD = "squeaksCount";
+    private static final String FIND_USER_EMAIL_FIELD = "email";
 
     public static SessionId login(String email, String password) throws JSONException, IOException {
         JSONObject loginJson = new JSONObject()
@@ -84,7 +86,8 @@ public class JsonApi {
         ArrayList<User> users = new ArrayList<>(responseJson.length());
 
         for (int i = 0; i < responseJson.length(); ++i) {
-            users.add(new User(responseJson.getString(i), 0));
+            JSONObject user = responseJson.getJSONObject(i);
+            users.add(new User(user.getString(FIND_USER_EMAIL_FIELD), user.getInt(FIND_USER_SQUEAKS_COUNT_FIELD)));
         }
 
         return users;
