@@ -1,13 +1,13 @@
-package com.example.charmander.test;
+package com.squeaker.squeaker;
 
 public class SqueakMetadata {
     String squeakId;
     String email;
-    int duration;
+    long duration;
     String date;
     String caption;
 
-    public SqueakMetadata(String squeakId, String email, int duration,
+    public SqueakMetadata(String squeakId, String email, long duration,
                             String date, String caption) {
         this.squeakId = squeakId;
         this.email = email;
@@ -24,7 +24,7 @@ public class SqueakMetadata {
         return email;
     }
 
-    public int getDuration() {
+    public long getDuration() {
         return duration;
     }
 

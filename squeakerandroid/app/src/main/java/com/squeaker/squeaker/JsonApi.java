@@ -1,11 +1,10 @@
-package com.example.charmander.test;
+package com.squeaker.squeaker;
 
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -75,12 +74,20 @@ public class JsonApi {
         callApiWithJson(BROADCAST_SQUEAK_URL, reqJson);
     }
 
-    public static void findUser(SessionId sid, String searchValue) throws JSONException, IOException {
+    public static ArrayList<User> findUser(SessionId sid, String searchValue) throws JSONException, IOException {
         JSONObject reqJson = new JSONObject()
                                         .put(SESSION_ID_FIELD, sid.getId())
                                         .put(FIND_USER_SEARCH_VALUE_FIELD, searchValue);
 
         String response = callApiWithJson(FIND_USER_URL, reqJson);
+        JSONArray responseJson = new JSONArray(response);
+        ArrayList<User> users = new ArrayList<>(responseJson.length());
+
+        for (int i = 0; i < responseJson.length(); ++i) {
+            users.add(new User(responseJson.getString(i), 0));
+        }
+
+        return users;
     }
 
     private static SqueakMetadata deserializeSqueakMetadata(JSONObject jsm) throws JSONException {
@@ -88,7 +95,7 @@ public class JsonApi {
                                     jsm.getString("email"),
                                     jsm.getInt("duration"),
                                     jsm.getString("date"),
-                                    "");
+                                    jsm.getString("caption"));
     }
 
     private static String callApiWithJson(String apiUrl, JSONObject reqJson) throws IOException {
@@ -122,7 +129,7 @@ public class JsonApi {
             return strBuilder.toString();
         } catch (Exception e) {
             Log.d("SQUEAKERJSONAPI", e.getMessage());
-            return "";
+            throw e;
         } finally {
             urlConnection.disconnect();
         }

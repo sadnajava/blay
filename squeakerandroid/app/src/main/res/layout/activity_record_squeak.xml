@@ -4,7 +4,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.charmander.test.RecordSqueakActivity">
+    tools:context="com.squeaker.squeaker.RecordSqueakActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -15,38 +15,8 @@
         android:gravity="center"
         android:layout_margin="@dimen/abc_action_bar_content_inset_material">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/record_squeak_label"
-            android:id="@+id/recordLabel"
-            android:layout_gravity="center_horizontal" />
-
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center">
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/recordButton"
-                android:src="@android:drawable/ic_btn_speak_now"
-                android:contentDescription="@string/record_button_label"
-                android:onClick="recordSqueak"/>
-
-            <SeekBar
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/seekBar"
-                android:layout_weight="1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal">
@@ -58,14 +28,44 @@
                 android:ems="10"
                 android:id="@+id/squeakText"
                 android:hint="@string/squeak_caption"
-                android:layout_weight="0.19" />
+                android:layout_weight="0.19"
+                android:layout_gravity="center_horizontal" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/recordButton"
+                    android:src="@android:drawable/radiobutton_off_background"
+                    android:contentDescription="@string/record_button_label"
+                    android:onClick="recordSqueak"
+                    android:tint="#ff0009" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/playbackButton"
+                    android:src="@android:drawable/ic_media_play"
+                    android:contentDescription="@string/playback_button_label"
+                    android:onClick="playbackSqueak" />
+
+            </LinearLayout>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/broadcast"
                 android:id="@+id/broadcastButton"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                android:onClick="broadcastSqueak"/>
+
         </LinearLayout>
 
     </LinearLayout>

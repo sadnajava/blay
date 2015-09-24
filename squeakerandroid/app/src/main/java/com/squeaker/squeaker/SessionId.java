@@ -1,4 +1,4 @@
-package com.example.charmander.test;
+package com.squeaker.squeaker;
 
 public class SessionId {
     private String sid;

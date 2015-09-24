@@ -1,4 +1,4 @@
-package com.example.charmander.test;
+package com.squeaker.squeaker;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

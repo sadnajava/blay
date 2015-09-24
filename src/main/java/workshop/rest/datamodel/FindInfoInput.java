@@ -3,6 +3,9 @@ package workshop.rest.datamodel;
 public class FindInfoInput extends SessionIdInput{
 	String searchValue;
 
+	public FindInfoInput() {
+	}
+
 	public FindInfoInput(String sid, String searchValue) {
 		super(sid);
 		this.searchValue = searchValue;

@@ -8,4 +8,5 @@
     <string name="title_activity_user_search">Find user</string>
     <string name="action_record_squeak">Record new squeak</string>
     <string name="action_find_user">Find user</string>
+    <string name="playback_button_label">Play</string>
 </resources>

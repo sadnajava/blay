@@ -1,4 +1,4 @@
-package com.example.charmander.test;
+package com.squeaker.squeaker;
 
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -41,9 +42,10 @@ public class UserSearchActivity extends ActionBarActivity {
     /**
      * Represents an asynchronous user search task.
      */
-    public class UserSearchTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserSearchTask extends AsyncTask<Void, Void, ArrayList<User>> {
         private SessionId sid;
         private String searchValue;
+        private ArrayList<String> fetchedUsers;
 
         UserSearchTask(SessionId sid, String searchValue) {
             this.sid = sid;
@@ -51,15 +53,18 @@ public class UserSearchActivity extends ActionBarActivity {
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO
-            return true;
+        protected ArrayList<User> doInBackground(Void... params) {
+            try {
+                return JsonApi.findUser(sid, searchValue);
+            } catch (Exception e) {
+                return new ArrayList<>();
+            }
         }
 
         @Override
-        protected void onPostExecute(Boolean success) {
-            super.onPostExecute(success);
-            // TODO
+        protected void onPostExecute(ArrayList<User> users) {
+            super.onPostExecute(users);
+            searchResultList.setAdapter(new UserArrayAdapter(UserSearchActivity.this, R.layout.user_badge_layout, users));
         }
     }
 }

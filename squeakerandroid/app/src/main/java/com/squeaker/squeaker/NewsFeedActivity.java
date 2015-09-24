@@ -1,4 +1,4 @@
-package com.example.charmander.test;
+package com.squeaker.squeaker;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -15,20 +15,18 @@ import java.util.ArrayList;
 
 public class NewsFeedActivity extends ActionBarActivity {
 
-    // UI references.
-    private TextView mNoDataTextView;
-    private ListView mSqueakListView;
+    private TextView noDataTextView;
+    private ListView squeakListView;
 
     private SessionId sid;
-    private ArrayList<SqueakMetadata> newsFeedSqueaks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_feed);
 
-        mNoDataTextView = (TextView) findViewById(R.id.noData);
-        mSqueakListView = (ListView) findViewById(R.id.newsFeedSqueaks);
+        noDataTextView = (TextView) findViewById(R.id.noData);
+        squeakListView = (ListView) findViewById(R.id.newsFeedSqueaks);
     }
 
     @Override
@@ -72,33 +70,31 @@ public class NewsFeedActivity extends ActionBarActivity {
     /**
      * Represents an asynchronous news feed fetch task.
      */
-    public class FetchNewsFeedTask extends AsyncTask<Void, Void, Boolean> {
-        private SessionId mSid;
+    public class FetchNewsFeedTask extends AsyncTask<Void, Void, ArrayList<SqueakMetadata>> {
+        private SessionId sid;
 
         FetchNewsFeedTask(SessionId sid) {
-            mSid = sid;
+            this.sid = sid;
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected ArrayList<SqueakMetadata> doInBackground(Void... params) {
             try {
-                newsFeedSqueaks = JsonApi.updateFeed(mSid);
-                return true;
+                return JsonApi.updateFeed(sid);
             } catch (Exception e) {
-                newsFeedSqueaks = new ArrayList<>();
-                return false;
+                return new ArrayList<>();
             }
         }
 
         @Override
-        protected void onPostExecute(Boolean success) {
-            super.onPostExecute(success);
-            if (newsFeedSqueaks.size() == 0) {
-                mNoDataTextView.setVisibility(View.VISIBLE);
-                mSqueakListView.setVisibility(View.GONE);
+        protected void onPostExecute(ArrayList<SqueakMetadata> squeaks) {
+            super.onPostExecute(squeaks);
+            if (squeaks.size() == 0) {
+                noDataTextView.setVisibility(View.VISIBLE);
+                squeakListView.setVisibility(View.GONE);
             } else {
-                mNoDataTextView.setVisibility(View.GONE);
-                mSqueakListView.setVisibility(View.VISIBLE);
+                noDataTextView.setVisibility(View.GONE);
+                squeakListView.setVisibility(View.VISIBLE);
             }
         }
     }

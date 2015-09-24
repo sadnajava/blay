@@ -1,4 +1,4 @@
-package com.example.charmander.test;
+package com.squeaker.squeaker;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;
