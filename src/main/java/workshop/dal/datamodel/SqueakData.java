@@ -3,6 +3,11 @@ package workshop.dal.datamodel;
 public class SqueakData extends AbstractSqueak {
 	String data;
 
+	
+	public SqueakData() {
+		super();
+	}
+
 	public SqueakData(String data) {
 		super();
 		this.data = data;

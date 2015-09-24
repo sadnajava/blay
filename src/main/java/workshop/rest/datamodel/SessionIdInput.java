@@ -3,6 +3,7 @@ package workshop.rest.datamodel;
 public class SessionIdInput {
 	String sessionId;
 
+	
 	public SessionIdInput(String sid) {
 		super();
 		this.sessionId = sid;

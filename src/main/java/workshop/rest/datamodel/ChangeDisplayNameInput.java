@@ -3,6 +3,11 @@ package workshop.rest.datamodel;
 public class ChangeDisplayNameInput extends SessionIdInput {
 	String displayName;
 
+	
+	public ChangeDisplayNameInput(String sid) {
+		super(sid);
+	}
+
 	public String getNewDisplayName() {
 		return displayName;
 	}

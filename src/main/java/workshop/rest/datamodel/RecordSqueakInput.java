@@ -7,6 +7,15 @@ public class RecordSqueakInput extends SessionIdInput {
 	String caption;
 	String data;
 
+	
+	public RecordSqueakInput() {
+		super();
+	}
+
+	public RecordSqueakInput(String sid) {
+		super(sid);
+	}
+
 	public RecordSqueakInput(String sid, String email, int duration,
 			String date, String caption, String data) {
 		super(sid);

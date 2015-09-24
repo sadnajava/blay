@@ -8,6 +8,12 @@ public class SqueakInfoOutput {
 	String caption;
 
 	
+	
+	public SqueakInfoOutput() {
+		super();
+	}
+
+
 	public SqueakInfoOutput(String squeakId, String email, int duration,
 			String date, String caption) {
 		super();

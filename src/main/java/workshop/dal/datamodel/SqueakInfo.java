@@ -7,6 +7,11 @@ public class SqueakInfo extends AbstractSqueak {
 	String date;
 	String caption;
 	
+	
+	public SqueakInfo() {
+		super();
+	}
+
 	public SqueakInfo(String email, int duration, String date, String caption) {
 		super();
 		this.email = email;

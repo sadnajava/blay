@@ -4,6 +4,15 @@ public class SqueakDataOutput extends SqueakInfoOutput {
 	String data;
 
 	
+	public SqueakDataOutput() {
+		super();
+	}
+
+	public SqueakDataOutput(String squeakId, String email, int duration,
+			String date, String caption) {
+		super(squeakId, email, duration, date, caption);
+	}
+
 	public SqueakDataOutput(String squeakId, String email, int duration,
 			String date, String caption, String data) {
 		super(squeakId, email, duration, date, caption);

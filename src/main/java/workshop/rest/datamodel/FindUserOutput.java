@@ -4,6 +4,11 @@ public class FindUserOutput {
 	String email;
 	Integer squeaksCount;
 
+	
+	public FindUserOutput() {
+		super();
+	}
+
 	public String getEmail() {
 		return email;
 	}
