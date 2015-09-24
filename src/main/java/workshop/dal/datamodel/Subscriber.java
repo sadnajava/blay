@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Subscriber implements IPrimaryKey {
 	String email;
 	String userName;
@@ -23,7 +25,7 @@ public class Subscriber implements IPrimaryKey {
 	}
 
 	public Subscriber() {
-
+		 Squeaks = new HashSet<UUID>();
 	}
 
 	public void setFollowing(Set<String> following) {
@@ -168,10 +170,12 @@ public class Subscriber implements IPrimaryKey {
 		this.registrationDate = registrationDate;
 	}
 	
+	@JsonIgnore
 	public boolean removeSqueak(UUID squeakId){
 		return Squeaks.remove(squeakId);
 	}
 	
+	@JsonIgnore
 	public int getNumberOfSqueaks(){
 		return Squeaks.size();
 	}
