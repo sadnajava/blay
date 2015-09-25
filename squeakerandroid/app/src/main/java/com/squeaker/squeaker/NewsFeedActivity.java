@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 
 public class NewsFeedActivity extends ActionBarActivity {
-
     private TextView noDataTextView;
     private ListView squeakListView;
 
@@ -96,6 +95,8 @@ public class NewsFeedActivity extends ActionBarActivity {
                 noDataTextView.setVisibility(View.GONE);
                 squeakListView.setVisibility(View.VISIBLE);
             }
+
+            squeakListView.setAdapter(new SqueakListAdapter(NewsFeedActivity.this, R.layout.squeak_badge_layout, sid, squeaks));
         }
     }
 }

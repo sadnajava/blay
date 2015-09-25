@@ -12,8 +12,8 @@ public class Subscriber implements IPrimaryKey {
 	String userName;
 	String password;
 	Date registrationDate;
-	Set<String> following;
-	Set<UUID> Squeaks;
+	Set<String> following = new HashSet<>();
+	Set<UUID> Squeaks = new HashSet<UUID>();
 	
 
 	public Set<UUID> getSqueaks() {
@@ -25,7 +25,6 @@ public class Subscriber implements IPrimaryKey {
 	}
 
 	public Subscriber() {
-		 Squeaks = new HashSet<UUID>();
 	}
 
 	public void setFollowing(Set<String> following) {
@@ -40,7 +39,6 @@ public class Subscriber implements IPrimaryKey {
 		this.userName = userName;
 		this.password = password;
 		this.registrationDate = registrationDate;
-		this.following = new HashSet<>();
 	}
 
 	public Subscriber(String email, String userName, String password,

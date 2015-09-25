@@ -1,10 +1,10 @@
 package com.squeaker.squeaker;
 
-public class User {
+public class UserMetadata {
     private String email;
     private int numSqueaks;
 
-    public User(String email, int numSqueaks) {
+    public UserMetadata(String email, int numSqueaks) {
         this.email = email;
         this.numSqueaks = numSqueaks;
     }

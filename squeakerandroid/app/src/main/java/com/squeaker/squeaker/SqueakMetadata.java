@@ -31,4 +31,8 @@ public class SqueakMetadata {
     public String getDate() {
         return date;
     }
+
+    public String getCaption() {
+        return caption;
+    }
 }

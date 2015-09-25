@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -42,7 +41,7 @@ public class UserSearchActivity extends ActionBarActivity {
     /**
      * Represents an asynchronous user search task.
      */
-    public class UserSearchTask extends AsyncTask<Void, Void, ArrayList<User>> {
+    public class UserSearchTask extends AsyncTask<Void, Void, ArrayList<UserMetadata>> {
         private SessionId sid;
         private String searchValue;
         private ArrayList<String> fetchedUsers;
@@ -53,7 +52,7 @@ public class UserSearchActivity extends ActionBarActivity {
         }
 
         @Override
-        protected ArrayList<User> doInBackground(Void... params) {
+        protected ArrayList<UserMetadata> doInBackground(Void... params) {
             try {
                 return JsonApi.findUser(sid, searchValue);
             } catch (Exception e) {
@@ -62,9 +61,11 @@ public class UserSearchActivity extends ActionBarActivity {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<User> users) {
+        protected void onPostExecute(ArrayList<UserMetadata> users) {
             super.onPostExecute(users);
-            searchResultList.setAdapter(new UserArrayAdapter(UserSearchActivity.this, R.layout.user_badge_layout, users));
+
+            searchResultList.setOnItemClickListener(new OpenUserProfileOnClickListener(UserSearchActivity.this, sid, users));
+            searchResultList.setAdapter(new UserMetadataArrayAdapter(UserSearchActivity.this, R.layout.user_badge_layout, users));
         }
     }
 }

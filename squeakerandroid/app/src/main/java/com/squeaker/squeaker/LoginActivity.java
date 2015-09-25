@@ -261,7 +261,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 Intent intent = new Intent(LoginActivity.this, NewsFeedActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(SqueakerAndroidConstants.SESSION_ID_FIELD, mSid.getId());
-                getApplicationContext().startActivity(intent);
+                startActivity(intent);
                 finish();
             } else {
                 passwordView.setError(getString(R.string.error_incorrect_password));
