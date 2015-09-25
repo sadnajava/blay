@@ -1,5 +1,6 @@
 package com.squeaker.squeaker;
 
+import android.os.AsyncTask;
 import android.view.View;
 
 public class FetchPlaySqueakOnClickListener implements View.OnClickListener {
@@ -13,10 +14,31 @@ public class FetchPlaySqueakOnClickListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        try {
-            byte[] audioData = JsonApi.getSqueakAudio(sid, squeakId);
-            AudioPlayer player = new AudioPlayer(audioData);
-        } catch (Exception e) {
+        FetchSqueakAudioDataTask task = new FetchSqueakAudioDataTask();
+        task.execute();
+    }
+
+    /**
+     * Represents an async squeak audio fetch task.
+     */
+    private class FetchSqueakAudioDataTask extends AsyncTask<Void, Void, byte[]> {
+
+        @Override
+        protected byte[] doInBackground(Void... params) {
+            try {
+                return JsonApi.getSqueakAudio(sid, squeakId);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(byte[] audioData) {
+            super.onPostExecute(audioData);
+
+            if (audioData != null) {
+                AudioPlayer player = new AudioPlayer(audioData);
+            }
         }
     }
 }

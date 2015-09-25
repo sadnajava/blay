@@ -22,6 +22,7 @@ public class OpenUserProfileOnClickListener implements AdapterView.OnItemClickLi
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(context, UserProfileActivity.class);
         intent.putExtra(SqueakerAndroidConstants.SESSION_ID_FIELD, sid.getId());
+        intent.putExtra(SqueakerAndroidConstants.USER_FIELD, users.get(position));
         context.startActivity(intent);
     }
 }

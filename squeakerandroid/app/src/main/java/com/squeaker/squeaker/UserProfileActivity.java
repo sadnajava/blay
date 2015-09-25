@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 public class UserProfileActivity extends AppCompatActivity {
     private SessionId sid;
+    private UserProfile userProfile;
 
     private TextView userProfileName;
     private Button followButton;
@@ -45,7 +46,7 @@ public class UserProfileActivity extends AppCompatActivity {
         task.execute((Void) null);
     }
 
-    private void updateUserProfileUI(UserProfile userProfile) {
+    private void updateUserProfileUI() {
         userProfileName.setText(userProfile.getEmail());
         userProfileSqueaks.setAdapter(new SqueakListAdapter(UserProfileActivity.this, R.layout.squeak_badge_layout, sid, userProfile.getSqueaks()));
 
@@ -58,7 +59,7 @@ public class UserProfileActivity extends AppCompatActivity {
     /**
      * Represents an asynchronous user profile fetch task.
      */
-    public class FetchUserProfileTask extends AsyncTask<Void, Void, UserProfile> {
+    private class FetchUserProfileTask extends AsyncTask<Void, Void, UserProfile> {
         private final UserMetadata userMetadata;
 
         FetchUserProfileTask(UserMetadata user) {
@@ -78,6 +79,8 @@ public class UserProfileActivity extends AppCompatActivity {
         protected void onPostExecute(final UserProfile userProfile) {
             super.onPostExecute(userProfile);
 
+            UserProfileActivity.this.userProfile = userProfile;
+
             if (userProfile == null) {
                 userProfileContainer.setVisibility(View.GONE);
                 noData.setVisibility(View.VISIBLE);
@@ -85,34 +88,50 @@ public class UserProfileActivity extends AppCompatActivity {
                 userProfileContainer.setVisibility(View.VISIBLE);
                 noData.setVisibility(View.GONE);
 
-                updateUserProfileUI(userProfile);
+                updateUserProfileUI();
 
-                followButton.setOnClickListener(new FollowButtonOnClickListener(userProfile));
+                followButton.setOnClickListener(new FollowButtonOnClickListener());
             }
         }
     }
 
     private class FollowButtonOnClickListener implements OnClickListener {
-        private final UserProfile userProfile;
-
-        public FollowButtonOnClickListener(UserProfile userProfile) {
-            this.userProfile = userProfile;
+        public FollowButtonOnClickListener() {
         }
 
         @Override
         public void onClick(View v) {
+            FollowUserTask task = new FollowUserTask();
+            task.execute();
+        }
+    }
+
+    /**
+     * Represents an asynchronous user follow/unfollow fetch task.
+     */
+    private class FollowUserTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... params) {
             try {
                 if (userProfile.isFollowing())
                     JsonApi.unfollowUser(sid, userProfile.getEmail());
                 else
                     JsonApi.followUser(sid, userProfile.getEmail());
-            } catch (Exception ignored) {
 
+                return true;
+            } catch (Exception e) {
+                return false;
             }
+        }
 
-            userProfile.setIsFollowing(!userProfile.isFollowing());
+        @Override
+        protected void onPostExecute(Boolean success) {
+            super.onPostExecute(success);
 
-            updateUserProfileUI(userProfile);
+            if (success) {
+                userProfile.setIsFollowing(!userProfile.isFollowing());
+                updateUserProfileUI();
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ package workshop.rest.datamodel;
 public class followSqueakerInput extends SessionIdInput {
 	String email;
 
+	public followSqueakerInput() {}
 	
 	public followSqueakerInput(String sid) {
 		super(sid);

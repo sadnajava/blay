@@ -32,7 +32,7 @@
             <Button
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
-                android:layout_height="33dp"
+                android:layout_height="wrap_content"
                 android:text="@string/follow"
                 android:id="@+id/followButton"
                 android:layout_gravity="center_horizontal|top"
