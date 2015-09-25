@@ -96,7 +96,7 @@ public class NewsFeedActivity extends ActionBarActivity {
                 squeakListView.setVisibility(View.VISIBLE);
             }
 
-            squeakListView.setAdapter(new SqueakListAdapter(NewsFeedActivity.this, R.layout.squeak_badge_layout, sid, squeaks));
+            squeakListView.setAdapter(new SqueakArrayAdapter(NewsFeedActivity.this, R.layout.squeak_badge_layout, sid, squeaks));
         }
     }
 }

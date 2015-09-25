@@ -8,9 +8,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
-public class SqueakListAdapter extends ArrayAdapter<SqueakMetadata> {
+public class SqueakArrayAdapter extends ArrayAdapter<SqueakMetadata> {
     private final Context context;
     private final int resource;
     private final SessionId sid;
@@ -18,7 +20,7 @@ public class SqueakListAdapter extends ArrayAdapter<SqueakMetadata> {
 
     final LayoutInflater inflater;
 
-    public SqueakListAdapter(Context context, int resource, SessionId sid, ArrayList<SqueakMetadata> squeaks) {
+    public SqueakArrayAdapter(Context context, int resource, SessionId sid, ArrayList<SqueakMetadata> squeaks) {
         super(context, resource, squeaks);
         this.context = context;
         this.resource = resource;
@@ -39,7 +41,10 @@ public class SqueakListAdapter extends ArrayAdapter<SqueakMetadata> {
         final ImageButton squeakPlayButton = (ImageButton) rowView.findViewById(R.id.squeakPlayButton);
 
         squeakCaption.setText(squeak.getCaption());
-        squeakDuration.setText(String.valueOf(squeak.getDuration()));
+
+        String formattedDuration = (new SimpleDateFormat("mm:ss").format(new Date(squeak.getDuration())));
+        squeakDuration.setText(formattedDuration);
+
         squeakDate.setText(squeak.getDate());
         squeakAuthor.setText(squeak.getEmail());
 

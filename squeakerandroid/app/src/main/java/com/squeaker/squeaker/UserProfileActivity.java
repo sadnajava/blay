@@ -48,7 +48,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void updateUserProfileUI() {
         userProfileName.setText(userProfile.getEmail());
-        userProfileSqueaks.setAdapter(new SqueakListAdapter(UserProfileActivity.this, R.layout.squeak_badge_layout, sid, userProfile.getSqueaks()));
+        userProfileSqueaks.setAdapter(new SqueakArrayAdapter(UserProfileActivity.this, R.layout.squeak_badge_layout, sid, userProfile.getSqueaks()));
 
         userFollowingList.setOnItemClickListener(new OpenUserProfileOnClickListener(UserProfileActivity.this, sid, userProfile.getFollowingUsers()));
         userFollowingList.setAdapter(new UserMetadataArrayAdapter(UserProfileActivity.this, R.layout.user_badge_layout, userProfile.getFollowingUsers()));
