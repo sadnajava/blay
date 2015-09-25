@@ -9,8 +9,8 @@ public class SqueakerData {
 	String searchedEmail;
 	boolean isFollowing;
 	Set<SqueakInfo> squeaks;
+	Set<String> follows;
 
-	
 	public SqueakerData(String requesterEmail, String searchedEmail,
 			Set<SqueakInfo> squeaks, boolean isFollowing) {
 		super();
@@ -20,6 +20,16 @@ public class SqueakerData {
 		this.isFollowing = isFollowing;
 	}
 
+	public SqueakerData(String requesterEmail, String searchedEmail,
+			boolean isFollowing, Set<SqueakInfo> squeaks, Set<String> follows) {
+		super();
+		this.requesterEmail = requesterEmail;
+		this.searchedEmail = searchedEmail;
+		this.isFollowing = isFollowing;
+		this.squeaks = squeaks;
+		this.follows = follows;
+	}
+
 	public String getSearchedEmail() {
 		return searchedEmail;
 	}
@@ -27,6 +37,7 @@ public class SqueakerData {
 	public void setSearchedEmail(String searchedEmail) {
 		this.searchedEmail = searchedEmail;
 	}
+
 	public String getRequesterEmail() {
 		return requesterEmail;
 	}
@@ -49,6 +60,14 @@ public class SqueakerData {
 
 	public void setFollowing(boolean isFollowing) {
 		this.isFollowing = isFollowing;
+	}
+
+	public Set<String> getFollows() {
+		return follows;
+	}
+
+	public void setFollows(Set<String> follows) {
+		this.follows = follows;
 	}
 
 }
