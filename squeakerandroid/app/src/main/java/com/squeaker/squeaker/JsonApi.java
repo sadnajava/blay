@@ -47,15 +47,15 @@ public class JsonApi {
     private static final String GET_SQUEAK_SQUEAK_ID_FIELD = "squeakId";
     private static final String GET_SQUEAK_AUDIO_DATA_FIELD = "data";
 
-    private static final String FOLLOW_USER_URL = "followuser";
+    private static final String FOLLOW_USER_URL = SERVER_HOST + "followsqueaker";
     private static final String FOLLOW_USER_EMAIL_FIELD = "email";
 
-    private static final String UNFOLLOW_USER_URL = "followuser";
+    private static final String UNFOLLOW_USER_URL = SERVER_HOST + "unfollowsqueaker";
 
     private static final String GET_USER_PROFILE_URL = SERVER_HOST + "getsqueaker";
     private static final String GET_USER_PROFILE_INPUT_EMAIL_FIELD = "searchValue";
     private static final String GET_USER_PROFILE_EMAIL_FIELD = "email";
-    private static final String GET_USER_PROFILE_IS_FOLLOWING_FIELD = "isFollowing";
+    private static final String GET_USER_PROFILE_IS_FOLLOWING_FIELD = "following";
     private static final String GET_USER_PROFILE_SQUEAKS_FIELD = "squeaks";
 
     public static SessionId login(String email, String password) throws JSONException, IOException {
