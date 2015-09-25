@@ -4,58 +4,65 @@
     android:weightSum="1">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center" >
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/squeakPlayButton"
+            android:src="@android:drawable/ic_media_play"
+            android:contentDescription="@string/record_button_label" />
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center" >
+            android:layout_marginLeft="20px">
 
-            <ImageButton
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageButton"
-                android:src="@android:drawable/ic_media_play"
-                android:contentDescription="@string/record_button_label" />
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Squeak caption"
+                android:id="@+id/squeakCaption"
+                android:layout_gravity="center_vertical" />
 
             <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/author"
+                    android:id="@+id/squeakAuthor" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Squeak caption"
-                        android:id="@+id/squeakCaption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/date"
+                    android:id="@+id/squeakDate"
+                    android:layout_marginLeft="20px" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/duration"
-                        android:id="@+id/squeakDuration" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/duration"
+                    android:id="@+id/squeakDuration"
+                    android:layout_marginLeft="20px" />
 
-                </LinearLayout>
-
-                <SeekBar
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:id="@+id/seekBar2"
-                    android:layout_weight="1" />
             </LinearLayout>
 
         </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

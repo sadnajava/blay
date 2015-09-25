@@ -9,14 +9,14 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class UserArrayAdapter extends ArrayAdapter<User> {
+public class UserMetadataArrayAdapter extends ArrayAdapter<UserMetadata> {
     private final Context context;
     private final int resource;
-    private final ArrayList<User> users;
+    private final ArrayList<UserMetadata> users;
 
     final LayoutInflater inflater;
 
-    public UserArrayAdapter(Context context, int resource, ArrayList<User> users) {
+    public UserMetadataArrayAdapter(Context context, int resource, ArrayList<UserMetadata> users) {
         super(context, resource, users);
         this.context = context;
         this.resource = resource;
@@ -26,14 +26,14 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final User user = users.get(position);
+        final UserMetadata userMetadata = users.get(position);
 
         final View rowView = inflater.inflate(resource, parent, false);
         final TextView userName = (TextView) rowView.findViewById(R.id.userName);
         final TextView numSqueaks = (TextView) rowView.findViewById(R.id.numSqueaks);
 
-        userName.setText(user.getEmail());
-        numSqueaks.setText(String.valueOf(user.getNumSqueaks()));
+        userName.setText(userMetadata.getEmail());
+        numSqueaks.setText(String.valueOf(userMetadata.getNumSqueaks()));
 
         return rowView;
     }

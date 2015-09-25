@@ -60,7 +60,9 @@ public class MicRecorder extends Thread {
             }
 
             endTime = new Date();
-            returnBuffer = recordBuffer;
+
+            // Truncate array to recorded size.
+            returnBuffer = java.util.Arrays.copyOf(recordBuffer, currentWriteIndex);
         } catch (Throwable x) {
             Log.w("Recorder", "Error reading voice audio", x);
         } finally {
@@ -78,12 +80,7 @@ public class MicRecorder extends Thread {
     }
 
     public byte[] getRecordedBytes() {
-        if (returnBuffer == null) {
-            return null;
-        }
-
-        // Truncate array to recorded size.
-        return java.util.Arrays.copyOf(returnBuffer, currentWriteIndex);
+        return returnBuffer;
     }
 
     public long getDuration() {

@@ -9,4 +9,9 @@
     <string name="action_record_squeak">Record new squeak</string>
     <string name="action_find_user">Find user</string>
     <string name="playback_button_label">Play</string>
+    <string name="record_button_label">Record</string>
+    <string name="author">author</string>
+    <string name="date">date</string>
+    <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
 </resources>

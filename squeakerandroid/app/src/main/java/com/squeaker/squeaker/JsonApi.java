@@ -1,5 +1,6 @@
 package com.squeaker.squeaker;
 
+import android.util.Base64;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -41,6 +42,15 @@ public class JsonApi {
     private static final String FIND_USER_SQUEAKS_COUNT_FIELD = "squeaksCount";
     private static final String FIND_USER_EMAIL_FIELD = "email";
 
+    private static final String GET_SQUEAK_URL = SERVER_HOST + "getsqueak";
+    private static final String GET_SQUEAK_SQUEAK_ID_FIELD = "squeakId";
+    private static final String GET_SQUEAK_AUDIO_DATA_FIELD = "data";
+
+    private static final String FOLLOW_USER_URL = "followuser";
+    private static final String FOLLOW_USER_EMAIL_FIELD = "email";
+
+    private static final String UNFOLLOW_USER_URL = "followuser";
+
     public static SessionId login(String email, String password) throws JSONException, IOException {
         JSONObject loginJson = new JSONObject()
                                         .put(LOGIN_EMAIL_FIELD, email)
@@ -65,32 +75,46 @@ public class JsonApi {
         return squeaks;
     }
 
-    public static void broadcastSqueak(SessionId sid, SqueakMetadata sm, String squeakData) throws JSONException, IOException {
+    public static void broadcastSqueak(SessionId sid, SqueakMetadata sm, byte[] squeakAudioData) throws JSONException, IOException {
+        String encodedAudioData = Base64.encodeToString(squeakAudioData, Base64.NO_WRAP);
+
         JSONObject reqJson = new JSONObject()
                                         .put(SESSION_ID_FIELD, sid.getId())
                                         .put(BROADCAST_SQUEAK_EMAIL_FIELD, sm.getEmail())
                                         .put(BROADCAST_SQUEAK_DURATION_FIELD, sm.getDuration())
                                         .put(BROADCAST_SQUEAK_DATE_FIELD, sm.getDate())
-                                        .put(BROADCAST_SQUEAK_DATA_FIELD, squeakData);
+                                        .put(BROADCAST_SQUEAK_DATA_FIELD, encodedAudioData);
 
         callApiWithJson(BROADCAST_SQUEAK_URL, reqJson);
     }
 
-    public static ArrayList<User> findUser(SessionId sid, String searchValue) throws JSONException, IOException {
+    public static ArrayList<UserMetadata> findUser(SessionId sid, String searchValue) throws JSONException, IOException {
         JSONObject reqJson = new JSONObject()
                                         .put(SESSION_ID_FIELD, sid.getId())
                                         .put(FIND_USER_SEARCH_VALUE_FIELD, searchValue);
 
         String response = callApiWithJson(FIND_USER_URL, reqJson);
         JSONArray responseJson = new JSONArray(response);
-        ArrayList<User> users = new ArrayList<>(responseJson.length());
+        ArrayList<UserMetadata> users = new ArrayList<>(responseJson.length());
 
         for (int i = 0; i < responseJson.length(); ++i) {
             JSONObject user = responseJson.getJSONObject(i);
-            users.add(new User(user.getString(FIND_USER_EMAIL_FIELD), user.getInt(FIND_USER_SQUEAKS_COUNT_FIELD)));
+            users.add(new UserMetadata(user.getString(FIND_USER_EMAIL_FIELD), user.getInt(FIND_USER_SQUEAKS_COUNT_FIELD)));
         }
 
         return users;
+    }
+
+    public static UserProfile getUserProfile(SessionId sid, UserMetadata userMetadata) {
+        return null;
+    }
+
+    public static byte[] getSqueakAudio(SessionId sid, String squeakId) throws JSONException, IOException {
+        JSONObject reqJson = new JSONObject()
+                                        .put(GET_SQUEAK_SQUEAK_ID_FIELD, squeakId);
+
+        JSONObject response = new JSONObject(callApiWithJson(GET_SQUEAK_URL, reqJson));
+        return Base64.decode(response.getString(GET_SQUEAK_AUDIO_DATA_FIELD), Base64.NO_WRAP);
     }
 
     private static SqueakMetadata deserializeSqueakMetadata(JSONObject jsm) throws JSONException {
@@ -136,5 +160,21 @@ public class JsonApi {
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+    public static void followUser(SessionId sid, String email) throws JSONException, IOException {
+        JSONObject reqJson = new JSONObject()
+                                        .put(SESSION_ID_FIELD, sid.getId())
+                                        .put(FOLLOW_USER_EMAIL_FIELD, email);
+
+        callApiWithJson(FOLLOW_USER_URL, reqJson);
+    }
+
+    public static void unfollowUser(SessionId sid, String email) throws JSONException, IOException {
+        JSONObject reqJson = new JSONObject()
+                                        .put(SESSION_ID_FIELD, sid.getId())
+                                        .put(FOLLOW_USER_EMAIL_FIELD, email);
+
+        callApiWithJson(UNFOLLOW_USER_URL, reqJson);
     }
 }

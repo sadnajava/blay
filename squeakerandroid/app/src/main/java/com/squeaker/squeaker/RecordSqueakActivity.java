@@ -3,7 +3,6 @@ package com.squeaker.squeaker;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
 
@@ -12,12 +11,9 @@ import java.util.Date;
 
 
 public class RecordSqueakActivity extends ActionBarActivity {
-    private EditText squeakText;
-
-    private MicRecorder recorder = null;
-    private byte[] squeakData;
-
     private SessionId sid;
+    private EditText squeakText;
+    private MicRecorder recorder = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +40,18 @@ public class RecordSqueakActivity extends ActionBarActivity {
     }
 
     public void playbackSqueak(View view) {
+        if (recorder == null)
+            return;
+
+        if (recorder.isRecording())
+            recorder.stopRecording();
+
+        while (recorder.isRecording()) {
+            Thread.yield();
+        }
+
+        // Play recorded sound.
+        new AudioPlayer(recorder.getRecordedBytes());
     }
 
     public void broadcastSqueak(View view) {
@@ -78,14 +86,11 @@ public class RecordSqueakActivity extends ActionBarActivity {
                 Thread.yield();
             }
 
-            final String encodedAudio = Base64.encodeToString(recorder.getRecordedBytes(), Base64.DEFAULT);
             final String squeakDate = new SimpleDateFormat().format(new Date());
-            final long squeakDuration = recorder.getDuration();
-
-            SqueakMetadata sm = new SqueakMetadata("", "", squeakDuration, squeakDate, caption);
+            SqueakMetadata sm = new SqueakMetadata("", "", recorder.getDuration(), squeakDate, caption);
 
             try {
-                JsonApi.broadcastSqueak(sid, sm, encodedAudio);
+                JsonApi.broadcastSqueak(sid, sm, recorder.getRecordedBytes());
                 return true;
             } catch (Exception e) {
                 return false;

@@ -17,43 +17,74 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-        <TextView
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="User Profile"
-            android:id="@+id/userProfileName" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="User Profile"
+                android:id="@+id/userProfileName" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="33dp"
+                android:text="@string/follow"
+                android:id="@+id/followButton"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_marginLeft="20px" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Latest Squeaks"
-            android:id="@+id/latestSqueaks"
-            android:layout_gravity="center_horizontal" />
-
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="248dp"
-            android:id="@+id/newsFeedSqueaks"
+            android:text="Nothing to see here"
+            android:id="@+id/noData"
             android:layout_gravity="center_horizontal"
-            tools:listitem="@layout/squeak_badge_layout"
-            android:paddingLeft="10px" />
+            android:visibility="gone" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Following"
-            android:id="@+id/userFollowing"
-            android:layout_gravity="center_horizontal" />
-
-        <ListView
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/userFollowingList"
-            android:layout_gravity="center_horizontal"
-            tools:listitem="@layout/user_badge_layout" />
+            android:layout_height="match_parent"
+            android:id="@+id/userProfileContainer">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Latest Squeaks"
+                android:id="@+id/latestSqueaks"
+                android:layout_gravity="center_horizontal" />
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="248dp"
+                android:id="@+id/userProfileSqueaks"
+                android:layout_gravity="center_horizontal"
+                tools:listitem="@layout/squeak_badge_layout"
+                android:paddingLeft="10px" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Following"
+                android:id="@+id/userFollowing"
+                android:layout_gravity="center_horizontal" />
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/userFollowingList"
+                android:layout_gravity="center_horizontal"
+                tools:listitem="@layout/user_badge_layout" />
+        </LinearLayout>
 
     </LinearLayout>
 </RelativeLayout>
