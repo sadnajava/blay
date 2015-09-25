@@ -2,13 +2,8 @@ package com.squeaker.squeaker;
 
 import android.media.AudioFormat;
 import android.media.AudioManager;
-import android.media.AudioRecord;
 import android.media.AudioTrack;
-import android.media.MediaRecorder;
 import android.util.Log;
-
-import java.io.IOException;
-import java.util.Date;
 
 /**
  * Helper class to manage recording audio.
