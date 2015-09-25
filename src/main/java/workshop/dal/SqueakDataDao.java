@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SqueakDataDao implements ISqueakDataDao {
 
-	private static final String tableName = "squeak_info";
+	private static final String tableName = "squeak_data";
 	private ICassandraClient client;
 
 	public SqueakDataDao() {
