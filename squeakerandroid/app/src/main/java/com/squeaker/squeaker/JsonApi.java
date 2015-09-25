@@ -1,5 +1,6 @@
 package com.squeaker.squeaker;
 
+import android.support.annotation.NonNull;
 import android.util.Base64;
 import android.util.Log;
 
@@ -51,6 +52,12 @@ public class JsonApi {
 
     private static final String UNFOLLOW_USER_URL = "followuser";
 
+    private static final String GET_USER_PROFILE_URL = SERVER_HOST + "getsqueaker";
+    private static final String GET_USER_PROFILE_INPUT_EMAIL_FIELD = "searchValue";
+    private static final String GET_USER_PROFILE_EMAIL_FIELD = "email";
+    private static final String GET_USER_PROFILE_IS_FOLLOWING_FIELD = "isFollowing";
+    private static final String GET_USER_PROFILE_SQUEAKS_FIELD = "squeaks";
+
     public static SessionId login(String email, String password) throws JSONException, IOException {
         JSONObject loginJson = new JSONObject()
                                         .put(LOGIN_EMAIL_FIELD, email)
@@ -65,14 +72,8 @@ public class JsonApi {
         JSONObject sidJson = new JSONObject().put(SESSION_ID_FIELD, sid.getId());
 
         String response = callApiWithJson(UPDATE_FEED_URL, sidJson);
-        JSONArray responseJson = new JSONArray(response);
-        ArrayList<SqueakMetadata> squeaks = new ArrayList<>(responseJson.length());
 
-        for (int i = 0; i < responseJson.length(); ++i) {
-            squeaks.add(deserializeSqueakMetadata(responseJson.getJSONObject(i)));
-        }
-
-        return squeaks;
+        return deserializeSqueakArray(new JSONArray(response));
     }
 
     public static void broadcastSqueak(SessionId sid, SqueakMetadata sm, byte[] squeakAudioData) throws JSONException, IOException {
@@ -105,8 +106,20 @@ public class JsonApi {
         return users;
     }
 
-    public static UserProfile getUserProfile(SessionId sid, UserMetadata userMetadata) {
-        return null;
+    public static UserProfile getUserProfile(SessionId sid, UserMetadata userMetadata) throws JSONException, IOException {
+        JSONObject reqJson = new JSONObject()
+                                        .put(SESSION_ID_FIELD, sid.getId())
+                                        .put(GET_USER_PROFILE_INPUT_EMAIL_FIELD, userMetadata.getEmail());
+
+        String response = callApiWithJson(GET_USER_PROFILE_URL, reqJson);
+        JSONObject userProfileJson = new JSONObject(response);
+
+        ArrayList<SqueakMetadata> squeaks = deserializeSqueakArray(userProfileJson.getJSONArray(GET_USER_PROFILE_SQUEAKS_FIELD));
+
+        UserProfile userProfile = new UserProfile(userProfileJson.getString(GET_USER_PROFILE_EMAIL_FIELD), squeaks,
+                                        new ArrayList<UserMetadata>(), userProfileJson.getBoolean(GET_USER_PROFILE_IS_FOLLOWING_FIELD));
+
+        return userProfile;
     }
 
     public static byte[] getSqueakAudio(SessionId sid, String squeakId) throws JSONException, IOException {
@@ -123,6 +136,16 @@ public class JsonApi {
                                     jsm.getInt("duration"),
                                     jsm.getString("date"),
                                     jsm.getString("caption"));
+    }
+
+    @NonNull
+    private static ArrayList<SqueakMetadata> deserializeSqueakArray(JSONArray responseJson) throws JSONException {
+        ArrayList<SqueakMetadata> squeaks = new ArrayList<>(responseJson.length());
+
+        for (int i = 0; i < responseJson.length(); ++i) {
+            squeaks.add(deserializeSqueakMetadata(responseJson.getJSONObject(i)));
+        }
+        return squeaks;
     }
 
     private static String callApiWithJson(String apiUrl, JSONObject reqJson) throws IOException {

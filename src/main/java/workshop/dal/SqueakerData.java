@@ -5,34 +5,25 @@ import java.util.Set;
 import workshop.dal.datamodel.SqueakInfo;
 
 public class SqueakerData {
-	String requesterEmail;
-	String searchedEmail;
+	String email;
 	boolean isFollowing;
 	Set<SqueakInfo> squeaks;
 
 	
-	public SqueakerData(String requesterEmail, String searchedEmail,
+	public SqueakerData(String requesterEmail, String email,
 			Set<SqueakInfo> squeaks, boolean isFollowing) {
 		super();
-		this.requesterEmail = requesterEmail;
-		this.searchedEmail = searchedEmail;
+		this.email = email;
 		this.squeaks = squeaks;
 		this.isFollowing = isFollowing;
 	}
 
-	public String getSearchedEmail() {
-		return searchedEmail;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setSearchedEmail(String searchedEmail) {
-		this.searchedEmail = searchedEmail;
-	}
-	public String getRequesterEmail() {
-		return requesterEmail;
-	}
-
-	public void setRequesterEmail(String requesterEmail) {
-		this.requesterEmail = requesterEmail;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public Set<SqueakInfo> getSqueaks() {
