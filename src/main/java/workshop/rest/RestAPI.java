@@ -135,7 +135,7 @@ public class RestAPI {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 		SessionId sessionId = new SessionId(squeak.getSessionId());
-		SqueakInfo info = new SqueakInfo(squeak.getEmail(),
+		SqueakInfo info = new SqueakInfo(null,
 				squeak.getDuration(), squeak.getDate(), squeak.getCaption());
 		SqueakData data = new SqueakData(squeak.getData());
 		bi.recordSqueak(sessionId, info, data);

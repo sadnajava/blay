@@ -20,6 +20,14 @@ public class SqueakInfo extends AbstractSqueak {
 		this.caption = caption;
 	}
 
+	
+	public SqueakInfo(int duration, String date, String caption) {
+		super();
+		this.duration = duration;
+		this.date = date;
+		this.caption = caption;
+	}
+
 	public String getCaption() {
 		return caption;
 	}

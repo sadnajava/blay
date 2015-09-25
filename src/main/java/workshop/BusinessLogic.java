@@ -129,6 +129,7 @@ public class BusinessLogic implements IBusinessLogic {
 		if (theUser == null) {
 			return false;
 		}
+		info.setEmail(theUser.getEmail());
 		data.setSqueakId(info.getSqueakId());
 		squeakInfoDao.putSqueak(info);
 		squeakDataDao.putSqueak(data);
@@ -171,7 +172,8 @@ public class BusinessLogic implements IBusinessLogic {
 				retSqueaks.add(squeakInfo);
 			}
 		}
-		return new SqueakerData(email, theUser.isFollowing(email), retSqueaks, subscriber.getFollowing());
+		return new SqueakerData(email, theUser.isFollowing(email), retSqueaks,
+				subscriber.getFollowing());
 	}
 
 	@Override

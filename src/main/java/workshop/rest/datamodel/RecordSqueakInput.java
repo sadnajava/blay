@@ -1,7 +1,6 @@
 package workshop.rest.datamodel;
 
 public class RecordSqueakInput extends SessionIdInput {
-	String email;
 	int duration;
 	String date;
 	String caption;
@@ -16,10 +15,9 @@ public class RecordSqueakInput extends SessionIdInput {
 		super(sid);
 	}
 
-	public RecordSqueakInput(String sid, String email, int duration,
+	public RecordSqueakInput(String sid, int duration,
 			String date, String caption, String data) {
 		super(sid);
-		this.email = email;
 		this.duration = duration;
 		this.date = date;
 		this.caption = caption;
@@ -32,14 +30,6 @@ public class RecordSqueakInput extends SessionIdInput {
 
 	public void setCaption(String caption) {
 		this.caption = caption;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public int getDuration() {
