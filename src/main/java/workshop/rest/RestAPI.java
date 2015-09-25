@@ -185,11 +185,11 @@ public class RestAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getSqueak(@Type(SqueakInput.class) SqueakInput request) {
 		if (request == null || StringUtils.isEmpty(request.getSessionId())
-				|| StringUtils.isEmpty(request.getSqeuakId())) {
+				|| StringUtils.isEmpty(request.getSqueakId())) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 		SqueakData squeak = bi.getSqueak(new SessionId(request.getSessionId()),
-				request.getSqeuakId());
+				request.getSqueakId());
 		if (squeak == null) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
@@ -209,11 +209,11 @@ public class RestAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteSqueak(@Type(SqueakInput.class) SqueakInput request) {
 		if (request == null || StringUtils.isEmpty(request.getSessionId())
-				|| StringUtils.isEmpty(request.getSqeuakId())) {
+				|| StringUtils.isEmpty(request.getSqueakId())) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 		boolean result = bi.deleteSqueak(new SessionId(request.getSessionId()),
-				request.getSqeuakId());
+				request.getSqueakId());
 		if (result) {
 			return Response.status(Status.OK).build();
 		} else {
