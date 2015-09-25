@@ -171,8 +171,7 @@ public class BusinessLogic implements IBusinessLogic {
 				retSqueaks.add(squeakInfo);
 			}
 		}
-		return new SqueakerData(theUser.getEmail(), email, retSqueaks,
-				theUser.isFollowing(email));
+		return new SqueakerData(email, theUser.isFollowing(email), retSqueaks, subscriber.getFollowing());
 	}
 
 	@Override
@@ -204,16 +203,18 @@ public class BusinessLogic implements IBusinessLogic {
 	}
 
 	@Override
-	public Collection<FindUserOutput> findUsers(SessionId sessionId, String searchValue) {
+	public Collection<FindUserOutput> findUsers(SessionId sessionId,
+			String searchValue) {
 		Collection<FindUserOutput> users = new HashSet<>();
 		Subscriber theUser = sessions.get(sessionId);
 		if (theUser == null) {
 			return users;
 		}
 		Collection<Subscriber> allSubscriber = subscriberDao.getAllSubscriber();
-		for (Subscriber sub : allSubscriber){
-			if (StringUtils.containsIgnoreCase(sub.getUserName(), searchValue)){
-				users.add(new FindUserOutput(sub.getEmail(), sub.getNumberOfSqueaks()));
+		for (Subscriber sub : allSubscriber) {
+			if (StringUtils.containsIgnoreCase(sub.getUserName(), searchValue)) {
+				users.add(new FindUserOutput(sub.getEmail(), sub
+						.getNumberOfSqueaks()));
 			}
 		}
 		return users;

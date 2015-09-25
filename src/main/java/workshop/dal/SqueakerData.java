@@ -8,14 +8,16 @@ public class SqueakerData {
 	String email;
 	boolean isFollowing;
 	Set<SqueakInfo> squeaks;
-
+	Set<String> follows;
 	
-	public SqueakerData(String requesterEmail, String email,
-			Set<SqueakInfo> squeaks, boolean isFollowing) {
+	
+	public SqueakerData(String email, boolean isFollowing,
+			Set<SqueakInfo> squeaks, Set<String> follows) {
 		super();
 		this.email = email;
-		this.squeaks = squeaks;
 		this.isFollowing = isFollowing;
+		this.squeaks = squeaks;
+		this.follows = follows;
 	}
 
 	public String getEmail() {
@@ -42,4 +44,13 @@ public class SqueakerData {
 		this.isFollowing = isFollowing;
 	}
 
+	public Set<String> getFollows() {
+		return follows;
+	}
+
+	public void setFollows(Set<String> follows) {
+		this.follows = follows;
+	}
+	
+	
 }
