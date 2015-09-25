@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,6 +20,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 public class JsonApi {
 
@@ -37,6 +41,7 @@ public class JsonApi {
     private static final String BROADCAST_SQUEAK_DURATION_FIELD = "duration";
     private static final String BROADCAST_SQUEAK_DATE_FIELD = "date";
     private static final String BROADCAST_SQUEAK_DATA_FIELD = "data";
+    private static final String BROADCAST_SQUEAK_CAPTION_FIELD = "caption";
 
     private static final String FIND_USER_URL = SERVER_HOST + "finduser";
     private static final String FIND_USER_SEARCH_VALUE_FIELD = "searchValue";
@@ -77,13 +82,14 @@ public class JsonApi {
     }
 
     public static void broadcastSqueak(SessionId sid, SqueakMetadata sm, byte[] squeakAudioData) throws JSONException, IOException {
-        String encodedAudioData = Base64.encodeToString(squeakAudioData, Base64.NO_WRAP);
+        String encodedAudioData = encodeAudioData(squeakAudioData);
 
         JSONObject reqJson = new JSONObject()
                                         .put(SESSION_ID_FIELD, sid.getId())
                                         .put(BROADCAST_SQUEAK_EMAIL_FIELD, sm.getEmail())
                                         .put(BROADCAST_SQUEAK_DURATION_FIELD, sm.getDuration())
                                         .put(BROADCAST_SQUEAK_DATE_FIELD, sm.getDate())
+                                        .put(BROADCAST_SQUEAK_CAPTION_FIELD, sm.getCaption())
                                         .put(BROADCAST_SQUEAK_DATA_FIELD, encodedAudioData);
 
         callApiWithJson(BROADCAST_SQUEAK_URL, reqJson);
@@ -122,20 +128,40 @@ public class JsonApi {
         return userProfile;
     }
 
+    public static void followUser(SessionId sid, String email) throws JSONException, IOException {
+        JSONObject reqJson = new JSONObject()
+                .put(SESSION_ID_FIELD, sid.getId())
+                .put(FOLLOW_USER_EMAIL_FIELD, email);
+
+        callApiWithJson(FOLLOW_USER_URL, reqJson);
+    }
+
+    public static void unfollowUser(SessionId sid, String email) throws JSONException, IOException {
+        JSONObject reqJson = new JSONObject()
+                .put(SESSION_ID_FIELD, sid.getId())
+                .put(FOLLOW_USER_EMAIL_FIELD, email);
+
+        callApiWithJson(UNFOLLOW_USER_URL, reqJson);
+    }
+
     public static byte[] getSqueakAudio(SessionId sid, String squeakId) throws JSONException, IOException {
         JSONObject reqJson = new JSONObject()
+                                        .put(SESSION_ID_FIELD, sid.getId())
                                         .put(GET_SQUEAK_SQUEAK_ID_FIELD, squeakId);
 
-        JSONObject response = new JSONObject(callApiWithJson(GET_SQUEAK_URL, reqJson));
-        return Base64.decode(response.getString(GET_SQUEAK_AUDIO_DATA_FIELD), Base64.NO_WRAP);
+        try {
+            return decodeAudioData(callApiWithJson(GET_SQUEAK_URL, reqJson));
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private static SqueakMetadata deserializeSqueakMetadata(JSONObject jsm) throws JSONException {
         return new SqueakMetadata(  jsm.getString("squeakId"),
-                                    jsm.getString("email"),
-                                    jsm.getInt("duration"),
-                                    jsm.getString("date"),
-                                    jsm.getString("caption"));
+                                    jsm.getString(BROADCAST_SQUEAK_EMAIL_FIELD),
+                                    jsm.getInt(BROADCAST_SQUEAK_DURATION_FIELD),
+                                    jsm.getString(BROADCAST_SQUEAK_DATE_FIELD),
+                                    jsm.getString(BROADCAST_SQUEAK_CAPTION_FIELD));
     }
 
     @NonNull
@@ -185,19 +211,46 @@ public class JsonApi {
         }
     }
 
-    public static void followUser(SessionId sid, String email) throws JSONException, IOException {
-        JSONObject reqJson = new JSONObject()
-                                        .put(SESSION_ID_FIELD, sid.getId())
-                                        .put(FOLLOW_USER_EMAIL_FIELD, email);
+    @NonNull
+    private static String encodeAudioData(byte[] audioData) throws IOException {
+        Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION);
+        deflater.setInput(audioData);
 
-        callApiWithJson(FOLLOW_USER_URL, reqJson);
+        ByteArrayOutputStream out = new ByteArrayOutputStream(audioData.length);
+
+        deflater.finish();
+
+        byte[] buffer = new byte[1024];
+
+        while (!deflater.finished()) {
+            int count = deflater.deflate(buffer);
+            out.write(buffer, 0, count);
+        }
+
+        out.close();
+        deflater.end();
+
+        return Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP);
     }
 
-    public static void unfollowUser(SessionId sid, String email) throws JSONException, IOException {
-        JSONObject reqJson = new JSONObject()
-                                        .put(SESSION_ID_FIELD, sid.getId())
-                                        .put(FOLLOW_USER_EMAIL_FIELD, email);
+    @NonNull
+    private static byte[] decodeAudioData(String encodedAudioData) throws JSONException, DataFormatException, IOException {
+        byte[] arrayData = Base64.decode(encodedAudioData, Base64.NO_WRAP);
 
-        callApiWithJson(UNFOLLOW_USER_URL, reqJson);
+        Inflater inflater = new Inflater();
+        inflater.setInput(arrayData);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream(arrayData.length);
+        byte[] buffer = new byte[1024];
+
+        while (!inflater.finished()) {
+            int count = inflater.inflate(buffer);
+            out.write(buffer, 0, count);
+        }
+
+        out.close();
+        inflater.end();
+
+        return out.toByteArray();
     }
 }

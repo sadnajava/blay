@@ -29,7 +29,7 @@ public class AudioPlayer extends Thread {
     public void run() {
         Log.i("AudioPlayer", "Running Audio Playback Thread");
 
-        AudioTrack player = new AudioTrack(AudioManager.STREAM_MUSIC, 8000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, audioData.length, AudioTrack.MODE_STATIC);
+        AudioTrack player = new AudioTrack(AudioManager.STREAM_MUSIC, 8000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, audioData.length, AudioTrack.MODE_STREAM);
 
         if (player.getState() == AudioTrack.STATE_UNINITIALIZED)
             return;
