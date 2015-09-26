@@ -203,7 +203,7 @@ public class RestAPI {
 		}
 	}
 
-	@DELETE
+	@POST
 	@Path("/deletesqueak")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

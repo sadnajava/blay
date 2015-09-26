@@ -231,19 +231,19 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
-        private final String mPassword;
-        private SessionId mSid = null;
+        private final String email;
+        private final String password;
+        private Session session = null;
 
         UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
+            this.email = email;
+            this.password = password;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                mSid = JsonApi.login(mEmail, mPassword);
+                session = JsonApi.login(email, password);
                 return true;
             } catch (Exception e) {
                 return false;
@@ -260,7 +260,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             if (success) {
                 Intent intent = new Intent(LoginActivity.this, NewsFeedActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra(SqueakerAndroidConstants.SESSION_ID_FIELD, mSid.getId());
+                intent.putExtra(SqueakerAndroidConstants.SESSION_FIELD, session);
                 startActivity(intent);
                 finish();
             } else {

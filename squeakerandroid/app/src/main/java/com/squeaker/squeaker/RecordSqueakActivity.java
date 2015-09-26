@@ -11,7 +11,7 @@ import java.util.Date;
 
 
 public class RecordSqueakActivity extends ActionBarActivity {
-    private SessionId sid;
+    private Session session;
     private EditText squeakText;
     private MicRecorder recorder = null;
 
@@ -27,8 +27,7 @@ public class RecordSqueakActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
 
-        String intentSid = getIntent().getExtras().getString(SqueakerAndroidConstants.SESSION_ID_FIELD);
-        sid = new SessionId(intentSid);
+        session = (Session) getIntent().getExtras().get(SqueakerAndroidConstants.SESSION_FIELD);
     }
 
     public void recordSqueak(View view) {
@@ -62,7 +61,7 @@ public class RecordSqueakActivity extends ActionBarActivity {
 
         final String caption = squeakText.getText().toString();
 
-        BroadcastSqueakTask task = new BroadcastSqueakTask(sid, caption, recorder);
+        BroadcastSqueakTask task = new BroadcastSqueakTask(caption, recorder);
         task.execute();
     }
 
@@ -70,12 +69,10 @@ public class RecordSqueakActivity extends ActionBarActivity {
      * Represents an asynchronous squeak broadcast task.
      */
     private class BroadcastSqueakTask extends AsyncTask<Void, Void, Boolean> {
-        private SessionId sid;
         private String caption;
         private MicRecorder recorder;
 
-        BroadcastSqueakTask(SessionId sid, String caption, MicRecorder recorder) {
-            this.sid = sid;
+        BroadcastSqueakTask(String caption, MicRecorder recorder) {
             this.caption = caption;
             this.recorder = recorder;
         }
@@ -90,7 +87,7 @@ public class RecordSqueakActivity extends ActionBarActivity {
             SqueakMetadata sm = new SqueakMetadata("", "", recorder.getDuration(), squeakDate, caption);
 
             try {
-                JsonApi.broadcastSqueak(sid, sm, recorder.getRecordedBytes());
+                JsonApi.broadcastSqueak(session, sm, recorder.getRecordedBytes());
                 return true;
             } catch (Exception e) {
                 return false;

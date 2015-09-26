@@ -14,7 +14,7 @@ public class UserSearchActivity extends ActionBarActivity {
     private EditText userSearchText;
     private ListView searchResultList;
 
-    private SessionId sid;
+    private Session session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +29,11 @@ public class UserSearchActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
 
-        String intentSid = getIntent().getExtras().getString(SqueakerAndroidConstants.SESSION_ID_FIELD);
-        sid = new SessionId(intentSid);
+        session = (Session) getIntent().getExtras().get(SqueakerAndroidConstants.SESSION_FIELD);
     }
 
     public void findUser(View view) {
-        UserSearchTask task = new UserSearchTask(sid, userSearchText.getText().toString());
+        UserSearchTask task = new UserSearchTask(userSearchText.getText().toString());
         task.execute();
     }
 
@@ -42,19 +41,17 @@ public class UserSearchActivity extends ActionBarActivity {
      * Represents an asynchronous user search task.
      */
     public class UserSearchTask extends AsyncTask<Void, Void, ArrayList<UserMetadata>> {
-        private SessionId sid;
         private String searchValue;
         private ArrayList<String> fetchedUsers;
 
-        UserSearchTask(SessionId sid, String searchValue) {
-            this.sid = sid;
+        UserSearchTask(String searchValue) {
             this.searchValue = searchValue;
         }
 
         @Override
         protected ArrayList<UserMetadata> doInBackground(Void... params) {
             try {
-                return JsonApi.findUser(sid, searchValue);
+                return JsonApi.findUser(session, searchValue);
             } catch (Exception e) {
                 return new ArrayList<>();
             }
@@ -64,7 +61,7 @@ public class UserSearchActivity extends ActionBarActivity {
         protected void onPostExecute(ArrayList<UserMetadata> users) {
             super.onPostExecute(users);
 
-            searchResultList.setOnItemClickListener(new OpenUserProfileOnClickListener(UserSearchActivity.this, sid, users));
+            searchResultList.setOnItemClickListener(new OpenUserProfileOnClickListener(UserSearchActivity.this, session, users));
             searchResultList.setAdapter(new UserMetadataArrayAdapter(UserSearchActivity.this, R.layout.user_badge_layout, users));
         }
     }

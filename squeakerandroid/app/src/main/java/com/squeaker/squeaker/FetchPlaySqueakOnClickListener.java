@@ -4,11 +4,11 @@ import android.os.AsyncTask;
 import android.view.View;
 
 public class FetchPlaySqueakOnClickListener implements View.OnClickListener {
-    private final SessionId sid;
+    private final Session session;
     private final String squeakId;
 
-    public FetchPlaySqueakOnClickListener(SessionId sid, String squeakId) {
-        this.sid = sid;
+    public FetchPlaySqueakOnClickListener(Session session, String squeakId) {
+        this.session = session;
         this.squeakId = squeakId;
     }
 
@@ -26,7 +26,7 @@ public class FetchPlaySqueakOnClickListener implements View.OnClickListener {
         @Override
         protected byte[] doInBackground(Void... params) {
             try {
-                return JsonApi.getSqueakAudio(sid, squeakId);
+                return JsonApi.getSqueakAudio(session, squeakId);
             } catch (Exception e) {
                 return null;
             }

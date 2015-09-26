@@ -17,7 +17,7 @@ public class NewsFeedActivity extends ActionBarActivity {
     private TextView noDataTextView;
     private ListView squeakListView;
 
-    private SessionId sid;
+    private Session session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +32,9 @@ public class NewsFeedActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
 
-        String intentSid = getIntent().getExtras().getString(SqueakerAndroidConstants.SESSION_ID_FIELD);
-        sid = new SessionId(intentSid);
+        session = (Session) getIntent().getExtras().get(SqueakerAndroidConstants.SESSION_FIELD);
 
-        FetchNewsFeedTask task = new FetchNewsFeedTask(sid);
+        FetchNewsFeedTask task = new FetchNewsFeedTask();
         task.execute((Void) null);
     }
 
@@ -52,14 +51,17 @@ public class NewsFeedActivity extends ActionBarActivity {
         int id = item.getItemId();
         Intent intent = null;
 
-        if (id == R.id.action_find_users) {
+        if (id == R.id.action_my_profile) {
+            intent = new Intent(this, UserProfileActivity.class);
+            intent.putExtra(SqueakerAndroidConstants.MY_PROFILE_FIELD, true);
+        } else if (id == R.id.action_find_users) {
             intent = new Intent(this, UserSearchActivity.class);
         } else if (id == R.id.action_record_squeak) {
             intent = new Intent(this, RecordSqueakActivity.class);
         }
 
         if (intent != null) {
-            intent.putExtra(SqueakerAndroidConstants.SESSION_ID_FIELD, sid.getId());
+            intent.putExtra(SqueakerAndroidConstants.SESSION_FIELD, session);
             startActivity(intent);
         }
 
@@ -70,16 +72,10 @@ public class NewsFeedActivity extends ActionBarActivity {
      * Represents an asynchronous news feed fetch task.
      */
     public class FetchNewsFeedTask extends AsyncTask<Void, Void, ArrayList<SqueakMetadata>> {
-        private SessionId sid;
-
-        FetchNewsFeedTask(SessionId sid) {
-            this.sid = sid;
-        }
-
         @Override
         protected ArrayList<SqueakMetadata> doInBackground(Void... params) {
             try {
-                return JsonApi.updateFeed(sid);
+                return JsonApi.updateFeed(session);
             } catch (Exception e) {
                 return new ArrayList<>();
             }
@@ -96,7 +92,7 @@ public class NewsFeedActivity extends ActionBarActivity {
                 squeakListView.setVisibility(View.VISIBLE);
             }
 
-            squeakListView.setAdapter(new SqueakArrayAdapter(NewsFeedActivity.this, R.layout.squeak_badge_layout, sid, squeaks));
+            squeakListView.setAdapter(new SqueakArrayAdapter(NewsFeedActivity.this, R.layout.squeak_badge_layout, session, squeaks));
         }
     }
 }
