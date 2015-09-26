@@ -61,6 +61,7 @@ public class JsonApi {
     private static final String GET_USER_PROFILE_INPUT_EMAIL_FIELD = "searchValue";
     private static final String GET_USER_PROFILE_EMAIL_FIELD = "email";
     private static final String GET_USER_PROFILE_IS_FOLLOWING_FIELD = "following";
+    private static final String GET_USER_PROFILE_FOLLOWING_USERS_FIELD = "follows";
     private static final String GET_USER_PROFILE_SQUEAKS_FIELD = "squeaks";
 
     public static SessionId login(String email, String password) throws JSONException, IOException {
@@ -102,12 +103,7 @@ public class JsonApi {
 
         String response = callApiWithJson(FIND_USER_URL, reqJson);
         JSONArray responseJson = new JSONArray(response);
-        ArrayList<UserMetadata> users = new ArrayList<>(responseJson.length());
-
-        for (int i = 0; i < responseJson.length(); ++i) {
-            JSONObject user = responseJson.getJSONObject(i);
-            users.add(new UserMetadata(user.getString(FIND_USER_EMAIL_FIELD), user.getInt(FIND_USER_SQUEAKS_COUNT_FIELD)));
-        }
+        ArrayList<UserMetadata> users = deserializeUserMetadataArray(responseJson);
 
         return users;
     }
@@ -121,11 +117,10 @@ public class JsonApi {
         JSONObject userProfileJson = new JSONObject(response);
 
         ArrayList<SqueakMetadata> squeaks = deserializeSqueakArray(userProfileJson.getJSONArray(GET_USER_PROFILE_SQUEAKS_FIELD));
+        ArrayList<UserMetadata> followingUsers = deserializeUserMetadataArray(userProfileJson.getJSONArray(GET_USER_PROFILE_FOLLOWING_USERS_FIELD));
 
-        UserProfile userProfile = new UserProfile(userProfileJson.getString(GET_USER_PROFILE_EMAIL_FIELD), squeaks,
-                                        new ArrayList<UserMetadata>(), userProfileJson.getBoolean(GET_USER_PROFILE_IS_FOLLOWING_FIELD));
-
-        return userProfile;
+        return new UserProfile(userProfileJson.getString(GET_USER_PROFILE_EMAIL_FIELD), squeaks,
+                                followingUsers, userProfileJson.getBoolean(GET_USER_PROFILE_IS_FOLLOWING_FIELD));
     }
 
     public static void followUser(SessionId sid, String email) throws JSONException, IOException {
@@ -154,6 +149,23 @@ public class JsonApi {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    @NonNull
+    private static UserMetadata deserializeUserMetadata(JSONObject user) throws JSONException {
+        return new UserMetadata(user.getString(FIND_USER_EMAIL_FIELD), user.getInt(FIND_USER_SQUEAKS_COUNT_FIELD));
+    }
+
+    @NonNull
+    private static ArrayList<UserMetadata> deserializeUserMetadataArray(JSONArray usersJson) throws JSONException {
+        ArrayList<UserMetadata> users = new ArrayList<>(usersJson.length());
+
+        for (int i = 0; i < usersJson.length(); ++i) {
+            JSONObject user = usersJson.getJSONObject(i);
+            users.add(deserializeUserMetadata(user));
+        }
+
+        return users;
     }
 
     private static SqueakMetadata deserializeSqueakMetadata(JSONObject jsm) throws JSONException {

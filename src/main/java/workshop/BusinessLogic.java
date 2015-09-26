@@ -9,7 +9,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.persistence.internal.expressions.ForUpdateOfClause;
 
 import workshop.dal.ISqueakDataDao;
 import workshop.dal.ISqueakInfoDao;
@@ -172,8 +171,17 @@ public class BusinessLogic implements IBusinessLogic {
 				retSqueaks.add(squeakInfo);
 			}
 		}
+
+		Set<String> following = subscriber.getFollowing();
+		Set<FindUserOutput> followingOutput = new HashSet<>();
+
+		for (String user : following) {
+			Subscriber subscriberFollowing = subscriberDao.getSubscriber(user);
+			followingOutput.add(new FindUserOutput(subscriberFollowing.getEmail(), subscriberFollowing.getNumberOfSqueaks()));
+		}
+
 		return new SqueakerData(email, theUser.isFollowing(email), retSqueaks,
-				subscriber.getFollowing());
+				followingOutput);
 	}
 
 	@Override

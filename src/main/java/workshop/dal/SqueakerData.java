@@ -3,16 +3,17 @@ package workshop.dal;
 import java.util.Set;
 
 import workshop.dal.datamodel.SqueakInfo;
+import workshop.rest.datamodel.FindUserOutput;
 
 public class SqueakerData {
 	String email;
 	boolean isFollowing;
 	Set<SqueakInfo> squeaks;
-	Set<String> follows;
+	Set<FindUserOutput> follows;
 	
 	
 	public SqueakerData(String email, boolean isFollowing,
-			Set<SqueakInfo> squeaks, Set<String> follows) {
+			Set<SqueakInfo> squeaks, Set<FindUserOutput> follows) {
 		super();
 		this.email = email;
 		this.isFollowing = isFollowing;
@@ -44,11 +45,11 @@ public class SqueakerData {
 		this.isFollowing = isFollowing;
 	}
 
-	public Set<String> getFollows() {
+	public Set<FindUserOutput> getFollows() {
 		return follows;
 	}
 
-	public void setFollows(Set<String> follows) {
+	public void setFollows(Set<FindUserOutput> follows) {
 		this.follows = follows;
 	}
 	

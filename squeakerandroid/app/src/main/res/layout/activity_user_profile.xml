@@ -64,7 +64,7 @@
 
             <ListView
                 android:layout_width="match_parent"
-                android:layout_height="248dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/userProfileSqueaks"
                 android:layout_gravity="center_horizontal"
                 tools:listitem="@layout/squeak_badge_layout"
