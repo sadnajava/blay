@@ -17,12 +17,15 @@ public class Session implements Parcelable {
         email = in.readString();
     }
 
-    public String getId() {
-        return this.sessionId;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(sessionId);
+        dest.writeString(email);
     }
 
-    public String getEmail() {
-        return email;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Session> CREATOR = new Creator<Session>() {
@@ -37,14 +40,12 @@ public class Session implements Parcelable {
         }
     };
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getId() {
+        return this.sessionId;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(sessionId);
-        dest.writeString(email);
+    public String getEmail() {
+        return email;
     }
+
 }

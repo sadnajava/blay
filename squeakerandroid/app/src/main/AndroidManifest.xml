@@ -16,25 +16,25 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".LoginActivity"
+            android:name="com.squeaker.app.LoginActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
         <activity
-            android:name=".RecordSqueakActivity"
+            android:name="com.squeaker.app.RecordSqueakActivity"
             android:label="@string/title_activity_record_squeak" >
         </activity>
         <activity
-            android:name=".NewsFeedActivity"
+            android:name="com.squeaker.app.NewsFeedActivity"
             android:label="@string/title_activity_news_feed" >
         </activity>
         <activity
-            android:name=".UserSearchActivity"
+            android:name="com.squeaker.app.UserSearchActivity"
             android:label="@string/title_activity_user_search" >
         </activity>
         <activity
-            android:name=".UserProfileActivity"
+            android:name="com.squeaker.app.UserProfileActivity"
             android:label="@string/title_activity_user_profile" >
         </activity>
     </application>

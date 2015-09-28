@@ -1,10 +1,8 @@
-package com.squeaker.squeaker;
+package com.squeaker.app;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.os.Parcelable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,8 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class UserProfileActivity extends AppCompatActivity {
-    private Session session;
+import com.squeaker.squeaker.R;
+import com.squeaker.squeaker.SqueakMetadata;
+import com.squeaker.squeaker.UserMetadata;
+import com.squeaker.squeaker.UserProfile;
+
+public class UserProfileActivity extends Activity {
     private UserProfile userProfile;
     private UserMetadata userMetadata;
     private boolean isMyProfile;
@@ -44,10 +46,8 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        session = (Session) getIntent().getExtras().get(SqueakerAndroidConstants.SESSION_FIELD);
-
         try {
-            isMyProfile = getIntent().getExtras().getBoolean(SqueakerAndroidConstants.MY_PROFILE_FIELD);
+            isMyProfile = getIntent().getExtras().getBoolean(SqueakerActivityProtocol.MY_PROFILE_FIELD);
         } catch (Exception ignored) {
             isMyProfile = false;
         }
@@ -57,7 +57,7 @@ public class UserProfileActivity extends AppCompatActivity {
             userMetadata = new UserMetadata(session.getEmail(), 0);
             userProfileSqueaks.setOnItemLongClickListener(new DeleteSqueakItemLongClickListener());
         } else {
-            userMetadata = (UserMetadata) getIntent().getExtras().get(SqueakerAndroidConstants.USER_FIELD);
+            userMetadata = (UserMetadata) getIntent().getExtras().get(SqueakerActivityProtocol.USER_FIELD);
         }
 
         fetchUserProfile();
@@ -70,9 +70,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void updateUserProfileUI() {
         userProfileName.setText(userProfile.getEmail());
-        userProfileSqueaks.setAdapter(new SqueakArrayAdapter(UserProfileActivity.this, R.layout.squeak_badge_layout, session, userProfile.getSqueaks()));
+        userProfileSqueaks.setAdapter(new SqueakArrayAdapter(UserProfileActivity.this, R.layout.squeak_badge_layout, api, userProfile.getSqueaks()));
 
-        userFollowingList.setOnItemClickListener(new OpenUserProfileOnClickListener(UserProfileActivity.this, session, userProfile.getFollowingUsers()));
+        userFollowingList.setOnItemClickListener(new OpenUserProfileOnClickListener(UserProfileActivity.this, session, api, userProfile.getFollowingUsers()));
         userFollowingList.setAdapter(new UserMetadataArrayAdapter(UserProfileActivity.this, R.layout.user_badge_layout, userProfile.getFollowingUsers()));
 
         followButton.setText(userProfile.isFollowing() ? R.string.unfollow : R.string.follow);
@@ -91,7 +91,7 @@ public class UserProfileActivity extends AppCompatActivity {
         @Override
         protected UserProfile doInBackground(Void... params) {
             try {
-                return JsonApi.getUserProfile(session, email);
+                return api.getUserProfile(email);
             } catch (Exception e) {
                 return null;
             }
@@ -159,9 +159,9 @@ public class UserProfileActivity extends AppCompatActivity {
         protected Boolean doInBackground(Void... params) {
             try {
                 if (userProfile.isFollowing())
-                    JsonApi.unfollowUser(session, userProfile.getEmail());
+                    api.unfollowUser(userProfile.getEmail());
                 else
-                    JsonApi.followUser(session, userProfile.getEmail());
+                    api.followUser(userProfile.getEmail());
 
                 return true;
             } catch (Exception e) {
@@ -190,7 +190,7 @@ public class UserProfileActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                JsonApi.deleteSqueak(session, squeakId);
+                api.deleteSqueak(squeakId);
                 return true;
             } catch (Exception e) {
                 return false;

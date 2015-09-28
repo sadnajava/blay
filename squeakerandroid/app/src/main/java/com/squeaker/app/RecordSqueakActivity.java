@@ -1,17 +1,20 @@
-package com.squeaker.squeaker;
+package com.squeaker.app;
 
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+
+import com.squeaker.squeaker.R;
+import com.squeaker.squeaker.SqueakMetadata;
+import com.squeaker.utils.AudioPlayer;
+import com.squeaker.utils.MicRecorder;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class RecordSqueakActivity extends ActionBarActivity {
-    private Session session;
+public class RecordSqueakActivity extends Activity {
     private EditText squeakText;
     private MicRecorder recorder = null;
 
@@ -23,16 +26,9 @@ public class RecordSqueakActivity extends ActionBarActivity {
         squeakText = (EditText) findViewById(R.id.squeakText);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        session = (Session) getIntent().getExtras().get(SqueakerAndroidConstants.SESSION_FIELD);
-    }
-
     public void recordSqueak(View view) {
         if (recorder == null || !recorder.isRecording()) {
-            recorder = new MicRecorder();
+            recorder = new MicRecorder(api.getCodecSettings());
         } else {
             recorder.stopRecording();
         }
@@ -50,7 +46,7 @@ public class RecordSqueakActivity extends ActionBarActivity {
         }
 
         // Play recorded sound.
-        new AudioPlayer(recorder.getRecordedBytes());
+        new AudioPlayer(api.getCodecSettings(), recorder.getRecordedBytes());
     }
 
     public void broadcastSqueak(View view) {
@@ -87,7 +83,7 @@ public class RecordSqueakActivity extends ActionBarActivity {
             SqueakMetadata sm = new SqueakMetadata("", "", recorder.getDuration(), squeakDate, caption);
 
             try {
-                JsonApi.broadcastSqueak(session, sm, recorder.getRecordedBytes());
+                api.broadcastSqueak(sm, recorder.getRecordedBytes());
                 return true;
             } catch (Exception e) {
                 return false;

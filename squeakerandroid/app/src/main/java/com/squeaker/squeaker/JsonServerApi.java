@@ -1,8 +1,12 @@
 package com.squeaker.squeaker;
 
+import android.os.Parcel;
 import android.support.annotation.NonNull;
-import android.util.Base64;
 import android.util.Log;
+
+import com.squeaker.utils.AudioCodecSettings;
+import com.squeaker.utils.BinaryDataSerializer;
+import com.squeaker.utils.CompressedBase64Serializer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,7 +15,6 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,101 +23,137 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
 
-public class JsonApi {
+public class JsonServerApi implements ServerApi {
+    private final String apiBaseUrl;
+    private String sessionId = null;
+    private BinaryDataSerializer dataSerializer = new CompressedBase64Serializer();
 
-    private static final String SERVER_HOST = "http://localhost:8080/squeaker/api/";
+    private static final String API_BASE_URL = "http://%s:8080/squeaker/api";
 
     private static final String SESSION_ID_FIELD = "sessionId";
 
-    private static final String LOGIN_URL = SERVER_HOST + "login";
+    private static final String LOGIN_VERB = "login";
     private static final String LOGIN_EMAIL_FIELD = "email";
     private static final String LOGIN_PASSWORD_FIELD = "password";
 
-    private static final String UPDATE_FEED_URL = SERVER_HOST + "updatefeed";
+    private static final String UPDATE_FEED_VERB = "updatefeed";
 
-    private static final String BROADCAST_SQUEAK_URL = SERVER_HOST + "recordsqueak";
+    private static final String BROADCAST_SQUEAK_VERB = "recordsqueak";
     private static final String BROADCAST_SQUEAK_EMAIL_FIELD = "email";
     private static final String BROADCAST_SQUEAK_DURATION_FIELD = "duration";
     private static final String BROADCAST_SQUEAK_DATE_FIELD = "date";
     private static final String BROADCAST_SQUEAK_DATA_FIELD = "data";
     private static final String BROADCAST_SQUEAK_CAPTION_FIELD = "caption";
 
-    private static final String FIND_USER_URL = SERVER_HOST + "finduser";
+    private static final String FIND_USER_VERB = "finduser";
     private static final String FIND_USER_SEARCH_VALUE_FIELD = "searchValue";
     private static final String FIND_USER_SQUEAKS_COUNT_FIELD = "squeaksCount";
     private static final String FIND_USER_EMAIL_FIELD = "email";
 
-    private static final String GET_SQUEAK_URL = SERVER_HOST + "getsqueak";
+    private static final String GET_SQUEAK_VERB = "getsqueak";
     private static final String GET_SQUEAK_SQUEAK_ID_FIELD = "squeakId";
 
-    private static final String FOLLOW_USER_URL = SERVER_HOST + "followsqueaker";
+    private static final String FOLLOW_USER_VERB = "followsqueaker";
     private static final String FOLLOW_USER_EMAIL_FIELD = "email";
 
-    private static final String UNFOLLOW_USER_URL = SERVER_HOST + "unfollowsqueaker";
+    private static final String UNFOLLOW_USER_VERB = "unfollowsqueaker";
 
-    private static final String GET_USER_PROFILE_URL = SERVER_HOST + "getsqueaker";
+    private static final String GET_USER_PROFILE_VERB = "getsqueaker";
     private static final String GET_USER_PROFILE_INPUT_EMAIL_FIELD = "searchValue";
     private static final String GET_USER_PROFILE_EMAIL_FIELD = "email";
     private static final String GET_USER_PROFILE_IS_FOLLOWING_FIELD = "following";
     private static final String GET_USER_PROFILE_FOLLOWING_USERS_FIELD = "follows";
     private static final String GET_USER_PROFILE_SQUEAKS_FIELD = "squeaks";
 
-    private static final String DELETE_SQUEAK_URL = SERVER_HOST + "deletesqueak";
+    private static final String DELETE_SQUEAK_VERB = "deletesqueak";
     private static final String DELETE_SQUEAK_SQUEAK_ID_FIELD = "squeakId";
 
-    public static Session login(String email, String password) throws JSONException, IOException {
+    private static final AudioCodecSettings CODEC_SETTINGS = new SqueakerCodecSettings();
+
+    public JsonServerApi(String serverIp) {
+        this.apiBaseUrl = String.format(API_BASE_URL, serverIp);
+    }
+
+    protected JsonServerApi(Parcel in) {
+        apiBaseUrl = in.readString();
+        sessionId = in.readString();
+    }
+
+    private String apiVerbToUrl(String apiVerb) {
+        return apiBaseUrl + "/" + apiVerb;
+    }
+
+    private void assertSessionId() throws IllegalStateException {
+        if (sessionId == null)
+            throw new IllegalStateException("Must obtain a session ID via login() before calling this method!");
+    }
+
+    @Override
+    public String login(String email, String password) throws Exception {
         JSONObject loginJson = new JSONObject()
                                         .put(LOGIN_EMAIL_FIELD, email)
                                         .put(LOGIN_PASSWORD_FIELD, password);
 
-        String response = callApiWithJson(LOGIN_URL, loginJson);
-        JSONObject responseJson = new JSONObject(response);
-        return new Session(responseJson.getString(SESSION_ID_FIELD), email);
+        String response = callApiWithJson(LOGIN_VERB, loginJson);
+
+        final String sessionId = new JSONObject(response).getString(SESSION_ID_FIELD);
+        this.sessionId = sessionId;
+
+        return sessionId;
     }
 
-    public static ArrayList<SqueakMetadata> updateFeed(Session session) throws JSONException, IOException {
-        JSONObject sessionJson = new JSONObject().put(SESSION_ID_FIELD, session.getId());
+    @Override
+    public ArrayList<SqueakMetadata> updateFeed() throws Exception {
+        assertSessionId();
 
-        String response = callApiWithJson(UPDATE_FEED_URL, sessionJson);
+        JSONObject sessionJson = new JSONObject().put(SESSION_ID_FIELD, sessionId);
+
+        String response = callApiWithJson(UPDATE_FEED_VERB, sessionJson);
 
         return deserializeSqueakArray(new JSONArray(response));
     }
 
-    public static void broadcastSqueak(Session session, SqueakMetadata sm, byte[] squeakAudioData) throws JSONException, IOException {
-        String encodedAudioData = encodeAudioData(squeakAudioData);
+    @Override
+    public void broadcastSqueak(SqueakMetadata sm, byte[] squeakAudioData) throws Exception {
+        assertSessionId();
+
+        String encodedAudioData = dataSerializer.encode(squeakAudioData);
 
         JSONObject reqJson = new JSONObject()
-                                        .put(SESSION_ID_FIELD, session.getId())
+                                        .put(SESSION_ID_FIELD, sessionId)
                                         .put(BROADCAST_SQUEAK_DURATION_FIELD, sm.getDuration())
                                         .put(BROADCAST_SQUEAK_DATE_FIELD, sm.getDate())
                                         .put(BROADCAST_SQUEAK_CAPTION_FIELD, sm.getCaption())
                                         .put(BROADCAST_SQUEAK_DATA_FIELD, encodedAudioData);
 
-        callApiWithJson(BROADCAST_SQUEAK_URL, reqJson);
+        callApiWithJson(BROADCAST_SQUEAK_VERB, reqJson);
     }
 
-    public static ArrayList<UserMetadata> findUser(Session session, String searchValue) throws JSONException, IOException {
+    @Override
+    public ArrayList<UserMetadata> findUser(String searchValue) throws Exception {
+        assertSessionId();
+
         JSONObject reqJson = new JSONObject()
-                                        .put(SESSION_ID_FIELD, session.getId())
+                                        .put(SESSION_ID_FIELD, sessionId)
                                         .put(FIND_USER_SEARCH_VALUE_FIELD, searchValue);
 
-        String response = callApiWithJson(FIND_USER_URL, reqJson);
+        String response = callApiWithJson(FIND_USER_VERB, reqJson);
         JSONArray responseJson = new JSONArray(response);
         ArrayList<UserMetadata> users = deserializeUserMetadataArray(responseJson);
 
         return users;
     }
 
-    public static UserProfile getUserProfile(Session session, String email) throws JSONException, IOException {
+    @Override
+    public UserProfile getUserProfile(String email) throws Exception {
+        assertSessionId();
+
         JSONObject reqJson = new JSONObject()
-                                        .put(SESSION_ID_FIELD, session.getId())
+                                        .put(SESSION_ID_FIELD, sessionId)
                                         .put(GET_USER_PROFILE_INPUT_EMAIL_FIELD, email);
 
-        String response = callApiWithJson(GET_USER_PROFILE_URL, reqJson);
+        String response = callApiWithJson(GET_USER_PROFILE_VERB, reqJson);
         JSONObject userProfileJson = new JSONObject(response);
 
         ArrayList<SqueakMetadata> squeaks = deserializeSqueakArray(userProfileJson.getJSONArray(GET_USER_PROFILE_SQUEAKS_FIELD));
@@ -124,40 +163,57 @@ public class JsonApi {
                                 followingUsers, userProfileJson.getBoolean(GET_USER_PROFILE_IS_FOLLOWING_FIELD));
     }
 
-    public static void followUser(Session session, String email) throws JSONException, IOException {
+    @Override
+    public void followUser(String email) throws Exception {
+        assertSessionId();
+
         JSONObject reqJson = new JSONObject()
-                .put(SESSION_ID_FIELD, session.getId())
+                .put(SESSION_ID_FIELD, sessionId)
                 .put(FOLLOW_USER_EMAIL_FIELD, email);
 
-        callApiWithJson(FOLLOW_USER_URL, reqJson);
+        callApiWithJson(FOLLOW_USER_VERB, reqJson);
     }
 
-    public static void unfollowUser(Session session, String email) throws JSONException, IOException {
+    @Override
+    public void unfollowUser(String email) throws Exception {
+        assertSessionId();
+
         JSONObject reqJson = new JSONObject()
-                .put(SESSION_ID_FIELD, session.getId())
+                .put(SESSION_ID_FIELD, sessionId)
                 .put(FOLLOW_USER_EMAIL_FIELD, email);
 
-        callApiWithJson(UNFOLLOW_USER_URL, reqJson);
+        callApiWithJson(UNFOLLOW_USER_VERB, reqJson);
     }
 
-    public static byte[] getSqueakAudio(Session session, String squeakId) throws JSONException, IOException {
+    @Override
+    public byte[] getSqueakAudio(String squeakId) throws Exception {
+        assertSessionId();
+
         JSONObject reqJson = new JSONObject()
-                                        .put(SESSION_ID_FIELD, session.getId())
+                                        .put(SESSION_ID_FIELD, sessionId)
                                         .put(GET_SQUEAK_SQUEAK_ID_FIELD, squeakId);
 
         try {
-            return decodeAudioData(callApiWithJson(GET_SQUEAK_URL, reqJson));
+            return dataSerializer.decode(callApiWithJson(GET_SQUEAK_VERB, reqJson));
         } catch (Exception e) {
             return null;
         }
     }
 
-    public static void deleteSqueak(Session session, String squeakId) throws JSONException, IOException {
+    @Override
+    public void deleteSqueak(String squeakId) throws Exception {
+        assertSessionId();
+
         JSONObject reqJson = new JSONObject()
-                                    .put(SESSION_ID_FIELD, session.getId())
+                                    .put(SESSION_ID_FIELD, sessionId)
                                     .put(DELETE_SQUEAK_SQUEAK_ID_FIELD, squeakId);
 
-        callApiWithJson(DELETE_SQUEAK_URL, reqJson);
+        callApiWithJson(DELETE_SQUEAK_VERB, reqJson);
+    }
+
+    @Override
+    public AudioCodecSettings getCodecSettings() {
+        return CODEC_SETTINGS;
     }
 
     @NonNull
@@ -195,8 +251,8 @@ public class JsonApi {
         return squeaks;
     }
 
-    private static String callApiWithJson(String apiUrl, JSONObject reqJson) throws IOException {
-        URL url = new URL(apiUrl);
+    private String callApiWithJson(String apiVerb, JSONObject reqJson) throws IOException {
+        URL url = new URL(apiVerbToUrl(apiVerb));
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
         try {
@@ -232,46 +288,15 @@ public class JsonApi {
         }
     }
 
-    @NonNull
-    private static String encodeAudioData(byte[] audioData) throws IOException {
-        Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION);
-        deflater.setInput(audioData);
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream(audioData.length);
-
-        deflater.finish();
-
-        byte[] buffer = new byte[1024];
-
-        while (!deflater.finished()) {
-            int count = deflater.deflate(buffer);
-            out.write(buffer, 0, count);
-        }
-
-        out.close();
-        deflater.end();
-
-        return Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP);
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    @NonNull
-    private static byte[] decodeAudioData(String encodedAudioData) throws JSONException, DataFormatException, IOException {
-        byte[] arrayData = Base64.decode(encodedAudioData, Base64.NO_WRAP);
-
-        Inflater inflater = new Inflater();
-        inflater.setInput(arrayData);
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream(arrayData.length);
-        byte[] buffer = new byte[1024];
-
-        while (!inflater.finished()) {
-            int count = inflater.inflate(buffer);
-            out.write(buffer, 0, count);
-        }
-
-        out.close();
-        inflater.end();
-
-        return out.toByteArray();
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(apiBaseUrl);
+        dest.writeString(sessionId);
     }
+
 }

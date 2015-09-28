@@ -17,4 +17,7 @@
     <string name="title_my_profile">My profile</string>
     <string name="delete_squeak">Delete squeak</string>
     <string name="delete_squeak_message">Are you sure you want to delete \"%1$s\"?</string>
+    <string name="server_ip">Server IP</string>
+    <string name="error_server_ip_empty">Please enter the server IP</string>
+    <string name="error_invalid_server_ip">This IP address is invalid</string>
 </resources>

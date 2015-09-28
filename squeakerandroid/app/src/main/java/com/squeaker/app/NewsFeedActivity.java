@@ -1,23 +1,22 @@
-package com.squeaker.squeaker;
+package com.squeaker.app;
 
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.squeaker.squeaker.R;
+import com.squeaker.squeaker.SqueakMetadata;
+
 import java.util.ArrayList;
 
-
-public class NewsFeedActivity extends ActionBarActivity {
+public class NewsFeedActivity extends Activity {
     private TextView noDataTextView;
     private ListView squeakListView;
-
-    private Session session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +30,6 @@ public class NewsFeedActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        session = (Session) getIntent().getExtras().get(SqueakerAndroidConstants.SESSION_FIELD);
 
         FetchNewsFeedTask task = new FetchNewsFeedTask();
         task.execute((Void) null);
@@ -53,7 +50,7 @@ public class NewsFeedActivity extends ActionBarActivity {
 
         if (id == R.id.action_my_profile) {
             intent = new Intent(this, UserProfileActivity.class);
-            intent.putExtra(SqueakerAndroidConstants.MY_PROFILE_FIELD, true);
+            intent.putExtra(SqueakerActivityProtocol.MY_PROFILE_FIELD, true);
         } else if (id == R.id.action_find_users) {
             intent = new Intent(this, UserSearchActivity.class);
         } else if (id == R.id.action_record_squeak) {
@@ -61,7 +58,6 @@ public class NewsFeedActivity extends ActionBarActivity {
         }
 
         if (intent != null) {
-            intent.putExtra(SqueakerAndroidConstants.SESSION_FIELD, session);
             startActivity(intent);
         }
 
@@ -75,7 +71,7 @@ public class NewsFeedActivity extends ActionBarActivity {
         @Override
         protected ArrayList<SqueakMetadata> doInBackground(Void... params) {
             try {
-                return JsonApi.updateFeed(session);
+                return api.updateFeed();
             } catch (Exception e) {
                 return new ArrayList<>();
             }
@@ -92,7 +88,7 @@ public class NewsFeedActivity extends ActionBarActivity {
                 squeakListView.setVisibility(View.VISIBLE);
             }
 
-            squeakListView.setAdapter(new SqueakArrayAdapter(NewsFeedActivity.this, R.layout.squeak_badge_layout, session, squeaks));
+            squeakListView.setAdapter(new SqueakArrayAdapter(NewsFeedActivity.this, R.layout.squeak_badge_layout, api, squeaks));
         }
     }
 }

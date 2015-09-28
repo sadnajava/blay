@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.squeaker.squeaker.NewsFeedActivity">
+    tools:context="com.squeaker.app.NewsFeedActivity">
     <item android:id="@+id/action_my_profile" android:title="@string/title_my_profile"
          android:orderInCategory="0" app:showAsAction="never"/>
     <item android:id="@+id/action_find_users" android:title="@string/title_activity_user_search"

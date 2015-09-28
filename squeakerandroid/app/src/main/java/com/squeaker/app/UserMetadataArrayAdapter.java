@@ -1,4 +1,4 @@
-package com.squeaker.squeaker;
+package com.squeaker.app;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.squeaker.squeaker.R;
+import com.squeaker.squeaker.UserMetadata;
 
 import java.util.ArrayList;
 
