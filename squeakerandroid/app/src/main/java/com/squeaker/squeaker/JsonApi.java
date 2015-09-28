@@ -26,7 +26,7 @@ import java.util.zip.Inflater;
 
 public class JsonApi {
 
-    private static final String SERVER_HOST = "http://10.100.102.2:8080/squeaker/api/";
+    private static final String SERVER_HOST = "http://localhost:8080/squeaker/api/";
 
     private static final String SESSION_ID_FIELD = "sessionId";
 
@@ -89,7 +89,6 @@ public class JsonApi {
 
         JSONObject reqJson = new JSONObject()
                                         .put(SESSION_ID_FIELD, session.getId())
-                                        .put(BROADCAST_SQUEAK_EMAIL_FIELD, sm.getEmail())
                                         .put(BROADCAST_SQUEAK_DURATION_FIELD, sm.getDuration())
                                         .put(BROADCAST_SQUEAK_DATE_FIELD, sm.getDate())
                                         .put(BROADCAST_SQUEAK_CAPTION_FIELD, sm.getCaption())

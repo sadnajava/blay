@@ -24,13 +24,28 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20px">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Squeak caption"
-                android:id="@+id/squeakCaption"
-                android:layout_gravity="center_vertical" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Squeak caption"
+                    android:id="@+id/squeakCaption"
+                    android:layout_gravity="center_vertical|bottom" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/duration"
+                    android:id="@+id/squeakDuration"
+                    android:layout_marginLeft="20px"
+                    android:layout_gravity="bottom" />
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -50,14 +65,6 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/date"
                     android:id="@+id/squeakDate"
-                    android:layout_marginLeft="20px" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/duration"
-                    android:id="@+id/squeakDuration"
                     android:layout_marginLeft="20px" />
 
             </LinearLayout>
