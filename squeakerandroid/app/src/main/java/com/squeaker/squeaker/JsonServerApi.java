@@ -39,8 +39,12 @@ public class JsonServerApi implements ServerApi {
 
     private static final String UPDATE_FEED_VERB = "updatefeed";
 
+    private static final String UPDATE_DISPLAY_NAME_VERB = "updatename";
+    private static final String UPDATE_DISPLAY_NAME_DISPLAY_NAME_FIELD = "displayName";
+
     private static final String BROADCAST_SQUEAK_VERB = "recordsqueak";
     private static final String BROADCAST_SQUEAK_EMAIL_FIELD = "email";
+    private static final String BROADCAST_SQUEAK_DISPLAY_NAME_FIELD = "displayName";
     private static final String BROADCAST_SQUEAK_DURATION_FIELD = "duration";
     private static final String BROADCAST_SQUEAK_DATE_FIELD = "date";
     private static final String BROADCAST_SQUEAK_DATA_FIELD = "data";
@@ -50,6 +54,7 @@ public class JsonServerApi implements ServerApi {
     private static final String FIND_USER_SEARCH_VALUE_FIELD = "searchValue";
     private static final String FIND_USER_SQUEAKS_COUNT_FIELD = "squeaksCount";
     private static final String FIND_USER_EMAIL_FIELD = "email";
+    private static final String FIND_USER_DISPLAY_NAME_FIELD = "displayName";
 
     private static final String GET_SQUEAK_VERB = "getsqueak";
     private static final String GET_SQUEAK_SQUEAK_ID_FIELD = "squeakId";
@@ -62,6 +67,7 @@ public class JsonServerApi implements ServerApi {
     private static final String GET_USER_PROFILE_VERB = "getsqueaker";
     private static final String GET_USER_PROFILE_INPUT_EMAIL_FIELD = "searchValue";
     private static final String GET_USER_PROFILE_EMAIL_FIELD = "email";
+    private static final String GET_USER_PROFILE_DISPLAY_NAME_FIELD = "displayName";
     private static final String GET_USER_PROFILE_IS_FOLLOWING_FIELD = "following";
     private static final String GET_USER_PROFILE_FOLLOWING_USERS_FIELD = "follows";
     private static final String GET_USER_PROFILE_SQUEAKS_FIELD = "squeaks";
@@ -107,11 +113,22 @@ public class JsonServerApi implements ServerApi {
     public ArrayList<SqueakMetadata> updateFeed() throws Exception {
         assertSessionId();
 
-        JSONObject sessionJson = new JSONObject().put(SESSION_ID_FIELD, sessionId);
+        JSONObject reqJson = new JSONObject().put(SESSION_ID_FIELD, sessionId);
 
-        String response = callApiWithJson(UPDATE_FEED_VERB, sessionJson);
+        String response = callApiWithJson(UPDATE_FEED_VERB, reqJson);
 
         return deserializeSqueakArray(new JSONArray(response));
+    }
+
+    @Override
+    public void updateDisplayName(String displayName) throws Exception {
+        assertSessionId();
+
+        JSONObject reqJson = new JSONObject()
+                                        .put(SESSION_ID_FIELD, sessionId)
+                                        .put(UPDATE_DISPLAY_NAME_DISPLAY_NAME_FIELD, displayName);
+
+        callApiWithJson(UPDATE_DISPLAY_NAME_VERB, reqJson);
     }
 
     @Override
@@ -159,8 +176,10 @@ public class JsonServerApi implements ServerApi {
         ArrayList<SqueakMetadata> squeaks = deserializeSqueakArray(userProfileJson.getJSONArray(GET_USER_PROFILE_SQUEAKS_FIELD));
         ArrayList<UserMetadata> followingUsers = deserializeUserMetadataArray(userProfileJson.getJSONArray(GET_USER_PROFILE_FOLLOWING_USERS_FIELD));
 
-        return new UserProfile(userProfileJson.getString(GET_USER_PROFILE_EMAIL_FIELD), squeaks,
-                                followingUsers, userProfileJson.getBoolean(GET_USER_PROFILE_IS_FOLLOWING_FIELD));
+        return new UserProfile(new UserMetadata(userProfileJson.getString(GET_USER_PROFILE_EMAIL_FIELD),
+                                                userProfileJson.getString(GET_USER_PROFILE_DISPLAY_NAME_FIELD),
+                                                squeaks.size()),
+                squeaks, followingUsers, userProfileJson.getBoolean(GET_USER_PROFILE_IS_FOLLOWING_FIELD));
     }
 
     @Override
@@ -218,7 +237,7 @@ public class JsonServerApi implements ServerApi {
 
     @NonNull
     private static UserMetadata deserializeUserMetadata(JSONObject user) throws JSONException {
-        return new UserMetadata(user.getString(FIND_USER_EMAIL_FIELD), user.getInt(FIND_USER_SQUEAKS_COUNT_FIELD));
+        return new UserMetadata(user.getString(FIND_USER_EMAIL_FIELD), user.getString(FIND_USER_DISPLAY_NAME_FIELD), user.getInt(FIND_USER_SQUEAKS_COUNT_FIELD));
     }
 
     @NonNull
@@ -234,8 +253,11 @@ public class JsonServerApi implements ServerApi {
     }
 
     private static SqueakMetadata deserializeSqueakMetadata(JSONObject jsm) throws JSONException {
-        return new SqueakMetadata(  jsm.getString("squeakId"),
-                                    jsm.getString(BROADCAST_SQUEAK_EMAIL_FIELD),
+        final UserMetadata user = new UserMetadata(jsm.getString(BROADCAST_SQUEAK_EMAIL_FIELD),
+                                                    jsm.getString(BROADCAST_SQUEAK_DISPLAY_NAME_FIELD));
+
+        return new SqueakMetadata(jsm.getString("squeakId"),
+                                    user,
                                     jsm.getInt(BROADCAST_SQUEAK_DURATION_FIELD),
                                     jsm.getString(BROADCAST_SQUEAK_DATE_FIELD),
                                     jsm.getString(BROADCAST_SQUEAK_CAPTION_FIELD));

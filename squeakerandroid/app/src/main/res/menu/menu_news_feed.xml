@@ -8,4 +8,6 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_record_squeak" android:title="@string/action_record_squeak"
         android:orderInCategory="200" app:showAsAction="never" />
+    <item android:id="@+id/action_account_settings" android:title="@string/title_activity_account_settings"
+        android:orderInCategory="300" app:showAsAction="never" />
 </menu>

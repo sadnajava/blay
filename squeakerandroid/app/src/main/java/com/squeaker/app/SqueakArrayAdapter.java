@@ -50,7 +50,7 @@ public class SqueakArrayAdapter extends ArrayAdapter<SqueakMetadata> {
         squeakDuration.setText(formattedDuration);
 
         squeakDate.setText(squeak.getDate());
-        squeakAuthor.setText(squeak.getEmail());
+        squeakAuthor.setText(squeak.getUser().getDisplayString());
 
         squeakPlayButton.setOnClickListener(new FetchPlaySqueakOnClickListener(api, squeak.getSqueakId()));
 

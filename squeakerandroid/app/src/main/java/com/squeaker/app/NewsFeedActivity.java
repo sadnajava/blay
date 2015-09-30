@@ -55,6 +55,8 @@ public class NewsFeedActivity extends Activity {
             intent = new Intent(this, UserSearchActivity.class);
         } else if (id == R.id.action_record_squeak) {
             intent = new Intent(this, RecordSqueakActivity.class);
+        } else if (id == R.id.action_account_settings) {
+            intent = new Intent(this, AccountSettingsActivity.class);
         }
 
         if (intent != null) {

@@ -80,7 +80,7 @@ public class RecordSqueakActivity extends Activity {
             }
 
             final String squeakDate = new SimpleDateFormat().format(new Date());
-            SqueakMetadata sm = new SqueakMetadata("", "", recorder.getDuration(), squeakDate, caption);
+            SqueakMetadata sm = new SqueakMetadata(null, null, recorder.getDuration(), squeakDate, caption);
 
             try {
                 api.broadcastSqueak(sm, recorder.getRecordedBytes());

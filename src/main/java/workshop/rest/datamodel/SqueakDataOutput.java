@@ -8,14 +8,14 @@ public class SqueakDataOutput extends SqueakInfoOutput {
 		super();
 	}
 
-	public SqueakDataOutput(String squeakId, String email, int duration,
+	public SqueakDataOutput(String squeakId, String email, String displayName, int duration,
 			String date, String caption) {
-		super(squeakId, email, duration, date, caption);
+		super(squeakId, email, displayName, duration, date, caption);
 	}
 
-	public SqueakDataOutput(String squeakId, String email, int duration,
+	public SqueakDataOutput(String squeakId, String email, String displayName, int duration,
 			String date, String caption, String data) {
-		super(squeakId, email, duration, date, caption);
+		super(squeakId, email, displayName, duration, date, caption);
 		this.data = data;
 	}
 

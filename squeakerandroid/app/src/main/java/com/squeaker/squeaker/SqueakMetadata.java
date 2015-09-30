@@ -2,15 +2,15 @@ package com.squeaker.squeaker;
 
 public class SqueakMetadata {
     String squeakId;
-    String email;
+    UserMetadata user;
     long duration;
     String date;
     String caption;
 
-    public SqueakMetadata(String squeakId, String email, long duration,
-                            String date, String caption) {
+    public SqueakMetadata(String squeakId, UserMetadata user, long duration,
+                          String date, String caption) {
         this.squeakId = squeakId;
-        this.email = email;
+        this.user = user;
         this.duration = duration;
         this.date = date;
         this.caption = caption == null ? "" : caption;
@@ -20,8 +20,8 @@ public class SqueakMetadata {
         return squeakId;
     }
 
-    public String getEmail() {
-        return email;
+    public UserMetadata getUser() {
+        return user;
     }
 
     public long getDuration() {

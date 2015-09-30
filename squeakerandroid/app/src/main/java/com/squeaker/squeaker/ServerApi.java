@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public interface ServerApi extends Parcelable {
     String login(String email, String password) throws Exception;
     ArrayList<SqueakMetadata> updateFeed() throws Exception;
+    void updateDisplayName(String displayName) throws Exception;
     void broadcastSqueak(SqueakMetadata sm, byte[] squeakAudioData) throws Exception;
     ArrayList<UserMetadata> findUser(String searchValue) throws Exception;
     UserProfile getUserProfile(String email) throws Exception;

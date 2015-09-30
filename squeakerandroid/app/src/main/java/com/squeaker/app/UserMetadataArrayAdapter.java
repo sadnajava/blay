@@ -35,7 +35,7 @@ public class UserMetadataArrayAdapter extends ArrayAdapter<UserMetadata> {
         final TextView userName = (TextView) rowView.findViewById(R.id.userName);
         final TextView numSqueaks = (TextView) rowView.findViewById(R.id.numSqueaks);
 
-        userName.setText(userMetadata.getEmail());
+        userName.setText(userMetadata.getDisplayString());
         numSqueaks.setText(String.valueOf(userMetadata.getNumSqueaks()));
 
         return rowView;

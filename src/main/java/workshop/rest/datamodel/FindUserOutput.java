@@ -2,6 +2,7 @@ package workshop.rest.datamodel;
 
 public class FindUserOutput {
 	String email;
+	String displayName;
 	Integer squeaksCount;
 
 	
@@ -17,6 +18,14 @@ public class FindUserOutput {
 		this.email = email;
 	}
 
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
 	public Integer getSqueaksCount() {
 		return squeaksCount;
 	}
@@ -25,9 +34,10 @@ public class FindUserOutput {
 		this.squeaksCount = squeaksCount;
 	}
 
-	public FindUserOutput(String email, Integer squeaksCount) {
+	public FindUserOutput(String email, String displayName, Integer squeaksCount) {
 		super();
 		this.email = email;
+		this.displayName = displayName;
 		this.squeaksCount = squeaksCount;
 	}
 

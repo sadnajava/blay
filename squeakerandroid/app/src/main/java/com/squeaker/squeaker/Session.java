@@ -5,22 +5,22 @@ import android.os.Parcelable;
 
 public class Session implements Parcelable {
     private String sessionId;
-    private String email;
+    private UserMetadata user;
 
-    public Session(String sessionId, String email) {
+    public Session(String sessionId, UserMetadata user) {
         this.sessionId = sessionId;
-        this.email = email;
+        this.user = user;
     }
 
     protected Session(Parcel in) {
         sessionId = in.readString();
-        email = in.readString();
+        user = in.readParcelable(UserMetadata.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(sessionId);
-        dest.writeString(email);
+        dest.writeParcelable(user, flags);
     }
 
     @Override
@@ -44,8 +44,7 @@ public class Session implements Parcelable {
         return this.sessionId;
     }
 
-    public String getEmail() {
-        return email;
+    public UserMetadata getUser() {
+        return user;
     }
-
 }

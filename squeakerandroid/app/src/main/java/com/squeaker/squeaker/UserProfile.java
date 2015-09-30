@@ -3,20 +3,16 @@ package com.squeaker.squeaker;
 import java.util.ArrayList;
 
 public class UserProfile {
-    private String email;
+    private UserMetadata userMetadata;
     private ArrayList<SqueakMetadata> squeaks;
     private ArrayList<UserMetadata> followingUsers;
     private boolean isFollowing;
 
-    public UserProfile(String email, ArrayList<SqueakMetadata> squeaks, ArrayList<UserMetadata> followingUsers, boolean isFollowing) {
-        this.email = email;
+    public UserProfile(UserMetadata userMetadata, ArrayList<SqueakMetadata> squeaks, ArrayList<UserMetadata> followingUsers, boolean isFollowing) {
+        this.userMetadata = userMetadata;
         this.squeaks = squeaks;
         this.followingUsers = followingUsers;
         this.isFollowing = isFollowing;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public ArrayList<SqueakMetadata> getSqueaks() {
@@ -33,5 +29,9 @@ public class UserProfile {
 
     public void setIsFollowing(boolean isFollowing) {
         this.isFollowing = isFollowing;
+    }
+
+    public UserMetadata getMetadata() {
+        return userMetadata;
     }
 }

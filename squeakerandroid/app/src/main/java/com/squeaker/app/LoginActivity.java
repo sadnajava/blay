@@ -22,6 +22,7 @@ import com.squeaker.squeaker.R;
 import com.squeaker.squeaker.ServerApi;
 import com.squeaker.squeaker.Session;
 import com.squeaker.squeaker.JsonServerApi;
+import com.squeaker.squeaker.UserMetadata;
 
 /**
  * A login screen that offers login via email/password.
@@ -200,7 +201,7 @@ public class LoginActivity extends Activity {
             showProgress(false);
 
             if (sessionId != null) {
-                Session session = new Session(sessionId, email);
+                Session session = new Session(sessionId, new UserMetadata(email, "", 0));
                 Intent intent = new Intent(LoginActivity.this, NewsFeedActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(SqueakerActivityProtocol.API_FIELD, api);

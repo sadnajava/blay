@@ -54,7 +54,7 @@ public class UserProfileActivity extends Activity {
 
         if (isMyProfile) {
             followButton.setVisibility(View.GONE);
-            userMetadata = new UserMetadata(session.getEmail(), 0);
+            userMetadata = session.getUser();
             userProfileSqueaks.setOnItemLongClickListener(new DeleteSqueakItemLongClickListener());
         } else {
             userMetadata = (UserMetadata) getIntent().getExtras().get(SqueakerActivityProtocol.USER_FIELD);
@@ -64,57 +64,38 @@ public class UserProfileActivity extends Activity {
     }
 
     private void fetchUserProfile() {
-        FetchUserProfileTask task = new FetchUserProfileTask(userMetadata.getEmail());
-        task.execute((Void) null);
+        FetchUserProfileTask task = new FetchUserProfileTask(api) {
+            @Override
+            protected void onPostExecute(final UserProfile userProfile) {
+                super.onPostExecute(userProfile);
+
+                UserProfileActivity.this.userProfile = userProfile;
+
+                if (userProfile == null) {
+                    userProfileContainer.setVisibility(View.GONE);
+                    noData.setVisibility(View.VISIBLE);
+                } else {
+                    userProfileContainer.setVisibility(View.VISIBLE);
+                    noData.setVisibility(View.GONE);
+
+                    updateUserProfileUI();
+
+                    followButton.setOnClickListener(new FollowButtonOnClickListener());
+                }
+            }
+        };
+
+        task.execute(userMetadata.getEmail());
     }
 
     private void updateUserProfileUI() {
-        userProfileName.setText(userProfile.getEmail());
+        userProfileName.setText(userProfile.getMetadata().getDisplayString());
         userProfileSqueaks.setAdapter(new SqueakArrayAdapter(UserProfileActivity.this, R.layout.squeak_badge_layout, api, userProfile.getSqueaks()));
 
         userFollowingList.setOnItemClickListener(new OpenUserProfileOnClickListener(UserProfileActivity.this, session, api, userProfile.getFollowingUsers()));
         userFollowingList.setAdapter(new UserMetadataArrayAdapter(UserProfileActivity.this, R.layout.user_badge_layout, userProfile.getFollowingUsers()));
 
         followButton.setText(userProfile.isFollowing() ? R.string.unfollow : R.string.follow);
-    }
-
-    /**
-     * Represents an asynchronous user profile fetch task.
-     */
-    private class FetchUserProfileTask extends AsyncTask<Void, Void, UserProfile> {
-        private final String email;
-
-        FetchUserProfileTask(String email) {
-            this.email = email;
-        }
-
-        @Override
-        protected UserProfile doInBackground(Void... params) {
-            try {
-                return api.getUserProfile(email);
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final UserProfile userProfile) {
-            super.onPostExecute(userProfile);
-
-            UserProfileActivity.this.userProfile = userProfile;
-
-            if (userProfile == null) {
-                userProfileContainer.setVisibility(View.GONE);
-                noData.setVisibility(View.VISIBLE);
-            } else {
-                userProfileContainer.setVisibility(View.VISIBLE);
-                noData.setVisibility(View.GONE);
-
-                updateUserProfileUI();
-
-                followButton.setOnClickListener(new FollowButtonOnClickListener());
-            }
-        }
     }
 
     private class FollowButtonOnClickListener implements OnClickListener {
@@ -159,9 +140,9 @@ public class UserProfileActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
             try {
                 if (userProfile.isFollowing())
-                    api.unfollowUser(userProfile.getEmail());
+                    api.unfollowUser(userProfile.getMetadata().getEmail());
                 else
-                    api.followUser(userProfile.getEmail());
+                    api.followUser(userProfile.getMetadata().getEmail());
 
                 return true;
             } catch (Exception e) {

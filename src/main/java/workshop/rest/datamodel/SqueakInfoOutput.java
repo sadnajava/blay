@@ -3,6 +3,7 @@ package workshop.rest.datamodel;
 public class SqueakInfoOutput {
 	String squeakId;
 	String email;
+	String displayName;
 	int duration;
 	String date;
 	String caption;
@@ -14,11 +15,12 @@ public class SqueakInfoOutput {
 	}
 
 
-	public SqueakInfoOutput(String squeakId, String email, int duration,
+	public SqueakInfoOutput(String squeakId, String email, String displayName, int duration,
 			String date, String caption) {
 		super();
 		this.squeakId = squeakId;
 		this.email = email;
+		this.displayName = displayName;
 		this.duration = duration;
 		this.date = date;
 		this.caption = caption;
@@ -44,6 +46,13 @@ public class SqueakInfoOutput {
 		this.email = email;
 	}
 
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
 
 	public int getDuration() {
 		return duration;

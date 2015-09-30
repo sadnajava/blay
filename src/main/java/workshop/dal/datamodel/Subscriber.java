@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Subscriber implements IPrimaryKey {
 	String email;
-	String userName;
+	String displayName;
 	String password;
 	Date registrationDate;
 	Set<String> following = new HashSet<>();
@@ -32,20 +32,20 @@ public class Subscriber implements IPrimaryKey {
 	}
 
 	
-	public Subscriber(String email, String userName, String password,
+	public Subscriber(String email, String displayName, String password,
 			Date registrationDate) {
 		super();
 		this.email = email;
-		this.userName = userName;
+		this.displayName = displayName;
 		this.password = password;
 		this.registrationDate = registrationDate;
 	}
 
-	public Subscriber(String email, String userName, String password,
+	public Subscriber(String email, String displayName, String password,
 			Date registrationDate, Set<String> following) {
 		super();
 		this.email = email;
-		this.userName = userName;
+		this.displayName = displayName;
 		this.password = password;
 		this.registrationDate = registrationDate;
 		this.following = following;
@@ -80,7 +80,7 @@ public class Subscriber implements IPrimaryKey {
 				* result
 				+ ((registrationDate == null) ? 0 : registrationDate.hashCode());
 		result = prime * result
-				+ ((userName == null) ? 0 : userName.hashCode());
+				+ ((displayName == null) ? 0 : displayName.hashCode());
 		return result;
 	}
 
@@ -113,27 +113,27 @@ public class Subscriber implements IPrimaryKey {
 				return false;
 		} else if (!registrationDate.equals(other.registrationDate))
 			return false;
-		if (userName == null) {
-			if (other.userName != null)
+		if (displayName == null) {
+			if (other.displayName != null)
 				return false;
-		} else if (!userName.equals(other.userName))
+		} else if (!displayName.equals(other.displayName))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Subscriber [email=" + email + ", userName=" + userName
+		return "Subscriber [email=" + email + ", displayName=" + displayName
 				+ ", password=" + password + ", registrationDate="
 				+ registrationDate + ", following=" + following + "]";
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getDisplayName() {
+		return displayName;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setDisplayName(String userName) {
+		this.displayName = userName;
 	}
 
 	@Override

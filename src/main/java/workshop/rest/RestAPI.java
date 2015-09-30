@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -246,12 +245,12 @@ public class RestAPI {
 	public Response updateName(
 			@Type(ChangeDisplayNameInput.class) ChangeDisplayNameInput newName) {
 		if (newName == null || StringUtils.isEmpty(newName.getSessionId())
-				|| StringUtils.isEmpty(newName.getNewDisplayName())) {
+				|| StringUtils.isEmpty(newName.getDisplayName())) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 		boolean result = bi.updateUserName(
 				new SessionId(newName.getSessionId()),
-				newName.getNewDisplayName());
+				newName.getDisplayName());
 		if (result) {
 			return Response.status(Status.OK).build();
 		} else {
