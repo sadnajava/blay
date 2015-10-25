@@ -185,6 +185,7 @@ public class LoginActivity extends Activity {
             this.email = email;
             this.password = password;
         }
+
         @Override
         protected String doInBackground(Void... params) {
             try {

@@ -62,7 +62,7 @@ public class BusinessLogic implements IBusinessLogic {
 	private SessionId addToSessionCache(Subscriber newSub) {
 		SessionId sid = new SessionId();
 
-		sessions.put(sid, newSub);
+		sessions.putIfAbsent(sid, newSub);
 		return sid;
 	}
 
