@@ -149,19 +149,7 @@ public class BusinessLogic implements IBusinessLogic {
 
 	@Override
 	public SqueakData getSqueak(SessionId sid, String squeakId) {
-		Subscriber theUser = sessions.get(sid);
-
-		if (theUser == null) {
-			return null;
-		}
-
-		UUID properSqueakId = UUID.fromString(squeakId);
-
-		if (theUser.getSqueaks().contains(properSqueakId)) {
-			return squeakDataDao.getSqueak(properSqueakId);
-		}
-
-		return null;
+		return squeakDataDao.getSqueak(UUID.fromString(squeakId));
 	}
 
 	@Override
